@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "main": "./app/",
     "description": "Informs and populates information regarding uniswap governance.",
-    "database_name": "CHANGE-ME",
+    "database_name": "govbot",
     "homepage": "https://github.com/thanpolas/govbot",
     "bugs": "https://github.com/thanpolas/govbot/issues",
     "author": {
