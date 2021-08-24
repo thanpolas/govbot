@@ -4,10 +4,10 @@
 
 const log = require('./services/log.service').get();
 
-const cronService = require('./services/cron.service');
+// const cronService = require('./services/cron.service');
 // const discordService = require('./services/discord.service');
 const entities = require('./entities');
-const globals = require('./utils/globals');
+// const globals = require('./utils/globals');
 // const migrationService = require('./services/migration.service');
 // const postgresService = require('./services/postgres.service');
 
