@@ -1,6 +1,6 @@
 {
     "postgres": {
-        "connection_string": "postgres://postgres:postgres@127.0.0.1:5432/template-test",
+        "connection_string": "postgres://postgres:postgres@127.0.0.1:5432/govbot-test",
         "connection_string_reset": "postgres://postgres:postgres@127.0.0.1:5432/postgres",
         "pool_min": 2,
         "pool_max": 10,

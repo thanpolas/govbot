@@ -57,7 +57,7 @@ jobs:
 
       - run:
           name: Test App
-          command: NUKE_TEST_DB=1 npm run test:app -- --ci --reporters=jest-junit
+          command: NUKE_TEST_DB=1 npm run jest
           environment:
             JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest'
             JEST_JUNIT_OUTPUT_NAME: 'results-app.xml'

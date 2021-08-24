@@ -1,7 +1,7 @@
 /**
- * ProjectName
- * ProjectDescription
- * https://github.com/thanpolas/discord_bot_template
+ * GovBot
+ * Informs and populates information regarding uniswap governance.
+ * https://github.com/thanpolas/govbot
  *
  * Copyright © Thanos Polychronakis
  * ISC License (ISC).
@@ -20,7 +20,7 @@ require('./utils/jsdoc-type-definitions');
 const globals = require('./utils/globals');
 const logService = require('./services/log.service');
 
-const APPLICATION_NAME = 'ProjectName';
+const APPLICATION_NAME = 'govbot';
 
 //
 // WARNING
