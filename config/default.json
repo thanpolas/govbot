@@ -11,5 +11,8 @@
     },
     "discord": {
         "token": "DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN"
+    },
+    "twitter": {
+        "auth_token": "DO NOT SET - USE ENV VAR: TWITTER_AUTH_TOKEN"
     }
 }

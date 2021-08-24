@@ -4,5 +4,8 @@
     },
     "discord": {
         "token": "DISCORD_BOT_TOKEN"
+    },
+    "twitter": {
+        "auth_token": "TWITTER_AUTH_TOKEN"
     }
 }
