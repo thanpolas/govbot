@@ -10,6 +10,10 @@ const entities = require('./entities');
 // const globals = require('./utils/globals');
 // const migrationService = require('./services/migration.service');
 // const postgresService = require('./services/postgres.service');
+const {
+  init: initExpressService,
+  dispose: disposeExpressService,
+} = require('./services/web/express.service');
 
 /**
  * Boots all the services of the application.
@@ -27,6 +31,8 @@ const appServices = (module.exports = {});
  */
 appServices.boot = async (bootOpts) => {
   log.notice('Booting Services...');
+
+  await initExpressService(bootOpts);
 
   // await migrationService.runHerokuMigration();
 
@@ -53,6 +59,7 @@ appServices.boot = async (bootOpts) => {
  * @return {Promise<void>}
  */
 appServices.dispose = async () => {
+  await disposeExpressService();
   // await postgresService.dispose();
   // await discordService.dispose();
   // if (globals.isProd) {
