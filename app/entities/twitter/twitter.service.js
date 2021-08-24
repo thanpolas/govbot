@@ -32,3 +32,12 @@ service.getClient = () => {
 
   return service._twClient;
 };
+
+/**
+ * Checks if the twitter service is ready.
+ *
+ * @return {boolean} if the twitter client is ready.
+ */
+service.isConnected = () => {
+  return !!service._twClient;
+};
