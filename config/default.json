@@ -9,6 +9,15 @@
         },
         "seed_directory": "./migrations/seeds"
     },
+    "webserver": {
+        "port": 6969,
+        "backend_base_url": "http://localhost:6969",
+        "enforce_ssl": false,
+        "cookie_secure": false,
+        "cors": {
+            "allowed_origins": []
+        }
+    },
     "discord": {
         "token": "DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN"
     },
