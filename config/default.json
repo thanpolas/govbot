@@ -1,0 +1,17 @@
+{
+    "postgres": {
+        "connection_string": "postgres://postgres:postgres@127.0.0.1:5432/template-dev",
+        "connection_string_reset": "postgres://postgres:postgres@127.0.0.1:5432/postgres",
+        "pool_min": 2,
+        "pool_max": 10,
+        "migrations": {
+            "directory": "./migrations/migrations/"
+        },
+        "seed_directory": "./migrations/seeds"
+    },
+    "discord": {
+        "guild_id": "DO NOT SET - USE ENV VAR: DISCORD_GUILD_ID",
+        "bot_log_channel_id": "DO NOT SET - USE ENV VAR: DISCORD_BOT_LOG_CHANNEL_ID",
+        "token": "DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN"
+    }
+}

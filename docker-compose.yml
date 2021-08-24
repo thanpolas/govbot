@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:11.6
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 3s
+      timeout: 10s
+      retries: 50

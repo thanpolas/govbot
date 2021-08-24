@@ -1,0 +1,106 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:16.6.1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "package.json" }}
+
+      - run:
+          name: Install dependencies
+          command: npm ci
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: deps-{{ checksum "package.json" }}
+
+  eslint:
+    docker:
+      - image: circleci/node:16.6.1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "package.json" }}
+
+      - run:
+          name: ESLint App
+          command: npm run eslint
+
+  test_app:
+    docker:
+      - image: circleci/node:16.6.1
+      - image: circleci/postgres:11.9-ram
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "package.json" }}
+
+      - run:
+          name: Test App
+          command: NUKE_TEST_DB=1 npm run test:app -- --ci --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest'
+            JEST_JUNIT_OUTPUT_NAME: 'results-app.xml'
+
+      - store_test_results:
+          path: artifacts
+
+  deploy_prod:
+    docker:
+      - image: circleci/buildpack-deps:20.10-scm
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Heroku for production.
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/CHANGE_ME.git master -f
+
+workflows:
+  version: 2
+  build-app:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: /.*/
+
+      - eslint:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /.*/
+
+      - test_app:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /.*/
+
+      - deploy_prod:
+          requires:
+            - test_app
+            - eslint
+          filters:
+            branches:
+              only: /master/

@@ -1,0 +1,10 @@
+{
+    "postgres": {
+        "connection_string": "DATABASE_URL"
+    },
+    "discord": {
+        "guild_id": "DISCORD_GUILD_ID",
+        "bot_log_channel_id": "DISCORD_BOT_LOG_CHANNEL_ID",
+        "token": "DISCORD_BOT_TOKEN"
+    }
+}

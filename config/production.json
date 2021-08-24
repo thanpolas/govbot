@@ -1,0 +1,5 @@
+{
+    "postgres": {
+        "connection_string": "USE ENV VAR"
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "name": "@thanpolas/discord-bot-template",
+    "version": "0.0.1",
+    "main": "./app/",
+    "description": "Discord bot template --- EDIT ME ---",
+    "database_name": "CHANGE-ME",
+    "homepage": "https://github.com/thanpolas/discord-bot-template",
+    "bugs": "https://github.com/thanpolas/discord-bot-template/issues",
+    "author": {
+        "name": "Thanos Polychronakis",
+        "email": "thanpolas@gmail.com"
+    },
+    "contributors": [],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thanpolas/discord-bot-template"
+    },
+    "license": "ISC",
+    "engines": {
+        "node": "16.6.1"
+    },
+    "scripts": {
+        "start": "node .",
+        "eslint": "eslint app test",
+        "db:reset:local": "node scripts/db-local.script.js",
+        "knex:create_migration": "knex --knexfile ./migrations/knexfile.js --migrations-directory ./migrations/migrations/ migrate:make",
+        "jest": "TZ=utc jest --ci --coverage && codecov",
+        "knex:migrate": "knex --knexfile ./migrations/knexfile.js --migrations-directory ./migrations/migrations/ migrate:latest",
+        "test": "npm run eslint && npm run jest"
+    },
+    "jest": {
+        "coverageDirectory": "./coverage/",
+        "collectCoverage": true,
+        "collectCoverageFrom": [
+            "./src/*.js",
+            "./src/**/*.js"
+        ],
+        "coverageReporters": [
+            "json",
+            "html"
+        ],
+        "roots": [
+            "./test/app",
+            "./test/unit"
+        ],
+        "testEnvironment": "node",
+        "setupFilesAfterEnv": [
+            "jest-extended"
+        ],
+        "globalSetup": "./test/lib/global-setup.test.js",
+        "testTimeout": 10000
+    },
+    "dependencies": {
+        "bluebird": "3.7.2",
+        "config": "3.3.6",
+        "connection-string": "4.3.4",
+        "date-fns": "2.23.0",
+        "discord.js": "13.1.0",
+        "dotenv": "10.0.0",
+        "invariant": "^2.2.4",
+        "knex": "0.95.10",
+        "lodash": "4.17.21",
+        "logality": "3.0.4",
+        "node-cron": "3.0.0",
+        "pg": "8.7.1",
+        "uuid": "8.3.2",
+        "validator": "13.6.0"
+    },
+    "devDependencies": {
+        "@types/jest": "27.0.1",
+        "codecov": "^3.8.3",
+        "eslint": "7.32.0",
+        "eslint-config-airbnb-base": "14.2.1",
+        "eslint-config-prettier": "8.3.0",
+        "eslint-plugin-import": "2.24.1",
+        "eslint-plugin-jest": "24.4.0",
+        "eslint-plugin-jsdoc": "36.0.7",
+        "eslint-plugin-prettier": "3.4.1",
+        "eslint-plugin-security": "1.4.0",
+        "expect": "27.0.6",
+        "faker": "5.5.3",
+        "jest": "27.0.6",
+        "jest-extended": "0.11.5",
+        "jest-junit": "12.2.0",
+        "prettier": "2.3.2",
+        "supertest": "6.1.6"
+    }
+}
