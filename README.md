@@ -2,6 +2,9 @@
 
 > Informs and populates information regarding uniswap governance.
 
+[![CircleCI](https://circleci.com/gh/thanpolas/govbot.svg?style=svg)](https://circleci.com/gh/thanpolas/govbot)
+[![codecov](https://codecov.io/gh/thanpolas/govbot/branch/main/graph/badge.svg?token=GMSGENFPYS)](https://codecov.io/gh/thanpolas/govbot)
+
 # How To Install
 
 ## Clone and Build
@@ -17,7 +20,7 @@ npm i
 ## Needed Environment Variables
 
 This project supports [`.env` file][dotenv] which is on `.gitignore`
-for your convenience when developing on your local. Needed environment variables 
+for your convenience when developing on your local. Needed environment variables
 can be found on `.env-template` which you should copy to `.env` and edit.
 
 # Development Operations / Maintenance
