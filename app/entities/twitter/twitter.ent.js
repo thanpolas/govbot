@@ -3,9 +3,11 @@
  * @see https://github.com/desmondmorris/node-twitter
  */
 
-const { init } = require('./twitter.service');
+const { init, isConnected } = require('./twitter.service');
 
 const entity = (module.exports = {});
+
+entity.isConnected = isConnected;
 
 /**
  * Initialize the twitter service.
