@@ -1,11 +1,11 @@
 {
-    "name": "@thanpolas/discord-bot-template",
+    "name": "govbot",
     "version": "0.0.1",
     "main": "./app/",
-    "description": "Discord bot template --- EDIT ME ---",
+    "description": "Informs and populates information regarding uniswap governance.",
     "database_name": "CHANGE-ME",
-    "homepage": "https://github.com/thanpolas/discord-bot-template",
-    "bugs": "https://github.com/thanpolas/discord-bot-template/issues",
+    "homepage": "https://github.com/thanpolas/govbot",
+    "bugs": "https://github.com/thanpolas/govbot/issues",
     "author": {
         "name": "Thanos Polychronakis",
         "email": "thanpolas@gmail.com"
@@ -13,7 +13,7 @@
     "contributors": [],
     "repository": {
         "type": "git",
-        "url": "https://github.com/thanpolas/discord-bot-template"
+        "url": "https://github.com/thanpolas/govbot"
     },
     "license": "ISC",
     "engines": {
@@ -57,7 +57,7 @@
         "date-fns": "2.23.0",
         "discord.js": "13.1.0",
         "dotenv": "10.0.0",
-        "invariant": "^2.2.4",
+        "invariant": "2.2.4",
         "knex": "0.95.10",
         "lodash": "4.17.21",
         "logality": "3.0.4",
@@ -68,7 +68,7 @@
     },
     "devDependencies": {
         "@types/jest": "27.0.1",
-        "codecov": "^3.8.3",
+        "codecov": "3.8.3",
         "eslint": "7.32.0",
         "eslint-config-airbnb-base": "14.2.1",
         "eslint-config-prettier": "8.3.0",
