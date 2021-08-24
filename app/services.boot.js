@@ -5,11 +5,11 @@
 const log = require('./services/log.service').get();
 
 const cronService = require('./services/cron.service');
-const discordService = require('./services/discord.service');
+// const discordService = require('./services/discord.service');
 const entities = require('./entities');
 const globals = require('./utils/globals');
-const migrationService = require('./services/migration.service');
-const postgresService = require('./services/postgres.service');
+// const migrationService = require('./services/migration.service');
+// const postgresService = require('./services/postgres.service');
 
 /**
  * Boots all the services of the application.
@@ -28,16 +28,16 @@ const appServices = (module.exports = {});
 appServices.boot = async (bootOpts) => {
   log.notice('Booting Services...');
 
-  await migrationService.runHerokuMigration();
+  // await migrationService.runHerokuMigration();
 
-  await postgresService.init();
+  // await postgresService.init();
 
-  await discordService.init(bootOpts);
+  // await discordService.init(bootOpts);
 
   // Launch task manager (cron) only on production.
-  if (globals.isProd) {
-    await cronService.init();
-  }
+  // if (globals.isProd) {
+  //   await cronService.init();
+  // }
 
   await entities.init(bootOpts);
 
@@ -53,9 +53,9 @@ appServices.boot = async (bootOpts) => {
  * @return {Promise<void>}
  */
 appServices.dispose = async () => {
-  await postgresService.dispose();
-  await discordService.dispose();
-  if (globals.isProd) {
-    await cronService.dispose();
-  }
+  // await postgresService.dispose();
+  // await discordService.dispose();
+  // if (globals.isProd) {
+  //   await cronService.dispose();
+  // }
 };
