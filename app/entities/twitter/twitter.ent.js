@@ -1,8 +1,16 @@
 /**
  * @fileoverview Twitter Business Logic and Service provider.
- * @see https://github.com/plhery/node-twitter-api-v2
+ * @see https://github.com/desmondmorris/node-twitter
  */
+
+const { init } = require('./twitter.service');
 
 const entity = (module.exports = {});
 
-entity.init = () => {};
+/**
+ * Initialize the twitter service.
+ *
+ */
+entity.init = () => {
+  init();
+};
