@@ -4,7 +4,7 @@
 const truncate = require('truncate');
 
 const { events, eventTypes } = require('../../events');
-const { sendTweet } = require('./send-tweet.ent');
+const tweet = require('./send-tweet.ent');
 
 const {
   MAX_CHARS,
@@ -90,7 +90,7 @@ entity._handleEvent = async (eventType, proposal) => {
         return;
     }
 
-    const res = await sendTweet(message);
+    const res = await tweet.sendTweet(message);
 
     await log.info(`Tweet sent for event CREATED, id ${res.id}`);
   } catch (ex) {
