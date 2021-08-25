@@ -18,6 +18,7 @@ describe('Snapshot Webhooks', () => {
 
     test('Will handle a create webhook', async () => {
       const agent = testLib.getAgent();
+
       const res = await agent.post('/snapshot-webhook').send(webhookCreate());
 
       expect(res.status).toBe(200);
