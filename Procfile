@@ -1,0 +1,1 @@
+service: npm start
