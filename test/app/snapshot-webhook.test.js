@@ -4,10 +4,17 @@
 
 const testLib = require('../lib/test.lib');
 
-describe('Test xyz', () => {
+const { webhookCreate } = require('../fixtures/snapshot.fix');
+
+describe('Snapshot Webhooks', () => {
   testLib.init();
 
   describe(`Happy Path`, () => {
-    test('Will successfully do', () => {});
+    test('Will handle a create webhook', async () => {
+      const agent = testLib.getAgent();
+      const res = await agent.post('/snapshot-webhook').send(webhookCreate());
+
+      expect(res.status).toBe(200);
+    });
   });
 });
