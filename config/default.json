@@ -22,6 +22,9 @@
         "token": "DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN"
     },
     "twitter": {
-        "auth_token": "DO NOT SET - USE ENV VAR: TWITTER_AUTH_TOKEN"
+        "consumer_key": "DO NOT SET - USE ENV VAR: TWITTER_CONSUMER_KEY",
+        "consumer_secret": "DO NOT SET - USE ENV VAR: TWITTER_conSUMER_SECRET",
+        "access_token": "DO NOT SET - USE ENV VAR: TWITTER_ACCESS_TOKEN",
+        "access_token_secret": "DO NOT SET - USE ENV VAR: TWITTER_ACCESS_TOKEN_SECRET"
     }
 }

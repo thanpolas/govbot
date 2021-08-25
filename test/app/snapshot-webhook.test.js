@@ -10,7 +10,7 @@ const {
   webhookEndFix,
   webhookDeletedFix,
 } = require('../fixtures/snapshot.fix');
-const { tweetResponse } = require('../fixtures/twitter.fix');
+const { tweetResponseFix } = require('../fixtures/twitter.fix');
 const tweet = require('../../app/entities/twitter/logic/send-tweet.ent');
 
 describe('Snapshot Webhooks', () => {
@@ -18,7 +18,7 @@ describe('Snapshot Webhooks', () => {
 
   describe(`Happy Path`, () => {
     beforeEach(() => {
-      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponse()));
+      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponseFix()));
     });
 
     test('Will handle a create webhook', async () => {
@@ -33,7 +33,7 @@ describe('Snapshot Webhooks', () => {
       expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
-        '🆕 Proposal "Temp Check: Larger Grant Construct // CEA + No Negative Net UNI" CREATED on Snapshot https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
+        '🆕 Proposal CREATED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
       expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
     });
 
@@ -47,7 +47,7 @@ describe('Snapshot Webhooks', () => {
       expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
-        '📢 Proposal "Temp Check: Larger Grant Construct // CEA + No Negative Net UNI" ACTIVE on Snapshot https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
+        '📢 Proposal now ACTIVE on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
       expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
     });
 
@@ -61,7 +61,7 @@ describe('Snapshot Webhooks', () => {
       expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
-        '⛔ Proposal "Temp Check: Larger Grant Construct // CEA + No Negative Net UNI" ENDED on Snapshot https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
+        '⛔ Proposal ENDED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
       expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
     });
 
@@ -77,7 +77,7 @@ describe('Snapshot Webhooks', () => {
       expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
-        '❌ Proposal "Temp Check: Larger Grant Construct // CEA + No Negative Net UNI" DELETED on Snapshot';
+        '❌ Proposal DELETED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"';
       expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
     });
   });

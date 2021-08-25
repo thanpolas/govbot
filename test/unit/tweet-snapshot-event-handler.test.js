@@ -5,7 +5,7 @@
 const testLib = require('../lib/test.lib');
 
 const { proposalFix } = require('../fixtures/snapshot.fix');
-const { tweetResponse } = require('../fixtures/twitter.fix');
+const { tweetResponseFix } = require('../fixtures/twitter.fix');
 const {
   _handleEvent,
 } = require('../../app/entities/twitter/logic/handle-snapshot-events.ent');
@@ -17,7 +17,7 @@ describe('Twitter _handleEvent()', () => {
 
   describe(`Happy Path`, () => {
     beforeEach(() => {
-      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponse()));
+      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponseFix()));
     });
 
     test('Will handle a create webhook', async () => {
@@ -26,7 +26,7 @@ describe('Twitter _handleEvent()', () => {
       expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
-        '🆕 Proposal "Temp Check: Larger Grant Construct // CEA + No Negative Net UNI" CREATED on Snapshot https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
+        '🆕 Proposal CREATED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
       expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
     });
 
@@ -43,7 +43,7 @@ describe('Twitter _handleEvent()', () => {
       // Max twitter size = 280
 
       const expectedMessage =
-        '🆕 Proposal "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo c…" CREATED on Snapshot https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
+        '🆕 Proposal CREATED on Snapshot:\n\n"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commod…"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
       expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
     });
   });

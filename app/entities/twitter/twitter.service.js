@@ -16,7 +16,12 @@ service._twClient = null;
  */
 service.init = () => {
   // Instanciate with desired auth type (here's Bearer v2 auth)
-  service._twClient = new TwitterApi(config.twitter.auth_token);
+  service._twClient = new TwitterApi({
+    consumer_key: config.twitter.consumer_key,
+    consumer_secret: config.twitter.consumer_secret,
+    access_token_key: config.twitter.access_token,
+    access_token_secret: config.twitter.access_token_secret,
+  });
 };
 
 /**
