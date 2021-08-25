@@ -69,7 +69,7 @@ When a new node version is available you need to updated it in the following:
 
 # Deployment
 
-TBD
+Merge to `main`, deployment will happen automatically to heroku via circleci.
 
 ## License
 
