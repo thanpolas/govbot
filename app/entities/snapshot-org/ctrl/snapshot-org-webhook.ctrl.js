@@ -16,7 +16,7 @@ const ctrl = (module.exports = {});
  * @param {function} next Error handler.
  * @return {Promise} A Promise.
  */
-ctrl.snapshotWebhook = async (req, res, next) => {
+ctrl.snapshotWebhookCtrl = async (req, res, next) => {
   try {
     await handleWebhook(req.body);
     res.json();
