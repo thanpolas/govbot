@@ -85,7 +85,7 @@ entity._handleEvent = async (eventType, proposal) => {
         messageTemplateSize = 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
-        message = `❌ Proposal "${proposalName}" DELETED on Snapshot ${proposal.link}`;
+        message = `❌ Proposal "${proposalName}" DELETED on Snapshot`;
         break;
       default:
         await log.warn(`_handleEvent() Bogus event type: "${eventType}"`);
