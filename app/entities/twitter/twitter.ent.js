@@ -13,8 +13,9 @@ entity.isConnected = isConnected;
 /**
  * Initialize the twitter service and handlers.
  *
+ * @return {Promise<void>} A Promise.
  */
-entity.init = () => {
+entity.init = async () => {
   initService();
-  initSnapshot();
+  await initSnapshot();
 };
