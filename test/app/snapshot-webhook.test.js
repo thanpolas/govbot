@@ -5,10 +5,10 @@
 const testLib = require('../lib/test.lib');
 
 const {
-  webhookCreate,
-  webhookStart,
-  webhookEnd,
-  webhookDeleted,
+  webhookCreateFix,
+  webhookStartFix,
+  webhookEndFix,
+  Fix,
 } = require('../fixtures/snapshot.fix');
 const { tweetResponse } = require('../fixtures/twitter.fix');
 const tweet = require('../../app/entities/twitter/logic/send-tweet.ent');
@@ -24,7 +24,9 @@ describe('Snapshot Webhooks', () => {
     test('Will handle a create webhook', async () => {
       const agent = testLib.getAgent();
 
-      const res = await agent.post('/snapshot-webhook').send(webhookCreate());
+      const res = await agent
+        .post('/snapshot-webhook')
+        .send(webhookCreateFix());
 
       expect(res.status).toBe(200);
 
@@ -38,7 +40,7 @@ describe('Snapshot Webhooks', () => {
     test('Will handle a start webhook', async () => {
       const agent = testLib.getAgent();
 
-      const res = await agent.post('/snapshot-webhook').send(webhookStart());
+      const res = await agent.post('/snapshot-webhook').send(webhookStartFix());
 
       expect(res.status).toBe(200);
 
@@ -52,7 +54,7 @@ describe('Snapshot Webhooks', () => {
     test('Will handle an end webhook', async () => {
       const agent = testLib.getAgent();
 
-      const res = await agent.post('/snapshot-webhook').send(webhookEnd());
+      const res = await agent.post('/snapshot-webhook').send(webhookEndFix());
 
       expect(res.status).toBe(200);
 
@@ -66,7 +68,7 @@ describe('Snapshot Webhooks', () => {
     test('Will handle a delete webhook', async () => {
       const agent = testLib.getAgent();
 
-      const res = await agent.post('/snapshot-webhook').send(webhookDeleted());
+      const res = await agent.post('/snapshot-webhook').send(Fix());
 
       expect(res.status).toBe(200);
 
