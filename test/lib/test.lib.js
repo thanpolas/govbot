@@ -93,7 +93,7 @@ testLib.getAgent = (optCookie) => {
   const agent = request.agent(express.app);
 
   agent.set('Accept', 'application/json');
-  agent.set('Origin', config.backend_base_url);
+  agent.set('Origin', config.webserver.backend_base_url);
   if (optCookie) {
     agent.set('Cookie', [`${optCookie.name}=${optCookie.value}`]);
   }
