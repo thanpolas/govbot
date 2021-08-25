@@ -8,7 +8,7 @@ const {
   webhookCreateFix,
   webhookStartFix,
   webhookEndFix,
-  Fix,
+  webhookDeletedFix,
 } = require('../fixtures/snapshot.fix');
 const { tweetResponse } = require('../fixtures/twitter.fix');
 const tweet = require('../../app/entities/twitter/logic/send-tweet.ent');
@@ -68,7 +68,9 @@ describe('Snapshot Webhooks', () => {
     test('Will handle a delete webhook', async () => {
       const agent = testLib.getAgent();
 
-      const res = await agent.post('/snapshot-webhook').send(Fix());
+      const res = await agent
+        .post('/snapshot-webhook')
+        .send(webhookDeletedFix());
 
       expect(res.status).toBe(200);
 
