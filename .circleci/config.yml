@@ -72,7 +72,7 @@ jobs:
       - checkout
       - run:
           name: Deploy to Heroku for production.
-          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/uniswap-govbot.git master -f
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/uniswap-govbot.git main -f
 
 workflows:
   version: 2
