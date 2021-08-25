@@ -77,5 +77,5 @@ entity._fetchProposal = async (proposalId) => {
  */
 entity._generateLink = (proposal) => {
   // https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN
-  return `https://snapshot.org/#/${proposal.space.name}/proposal/${proposal.id}`;
+  return `https://snapshot.org/#/${proposal.space.name}/${proposal.id}`;
 };
