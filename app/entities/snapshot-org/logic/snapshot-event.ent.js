@@ -58,12 +58,15 @@ entity.handleWebhook = async (data) => {
 /**
  * Fetches the proposal data from snapshot's GQL API.
  *
- * @param {string} proposalId The proposal id to fetch.
+ * @param {string} proposalUri The proposal uri to fetch.
  * @return {Object|void} Fetched proposal object.
  * @private
  */
-entity._fetchProposal = async (proposalId) => {
-  const data = await graphQuery(queryProposal(proposalId));
+entity._fetchProposal = async (proposalUri) => {
+  const [, proposalId] = proposalUri.split('/');
+  const query = queryProposal(proposalId);
+
+  const data = await graphQuery(query);
 
   return data?.data?.proposal;
 };
@@ -77,5 +80,6 @@ entity._fetchProposal = async (proposalId) => {
  */
 entity._generateLink = (proposal) => {
   // https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN
-  return `https://snapshot.org/#/${proposal.space.name}/${proposal.id}`;
+  const spaceName = proposal.space.name.toLowerCase();
+  return `https://snapshot.org/#/${spaceName}/proposal/${proposal.id}`;
 };
