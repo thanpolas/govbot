@@ -2,7 +2,7 @@
  * @fileoverview Bootsrap for Entities.
  */
 
-const discordEnt = require('./discord');
+// const discordEnt = require('./discord');
 const messageRouter = require('./message-router');
 const { init: initAdminRelay } = require('./admin-logs');
 const { init: initTwitter } = require('./twitter');
@@ -24,5 +24,5 @@ bootstrap.init = async (bootOpts) => {
     return;
   }
   await initAdminRelay();
-  await discordEnt.init();
+  // await discordEnt.init();
 };
