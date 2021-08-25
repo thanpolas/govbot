@@ -3,6 +3,8 @@
  */
 
 const { events, eventTypes } = require('../../events');
+const { queryProposal } = require('../gql-queries/proposal.gql');
+const { graphQuery } = require('./query-subgraph.ent');
 
 const log = require('../../../services/log.service').get();
 
@@ -43,8 +45,37 @@ entity.handleWebhook = async (data) => {
     `Webhook event. Type: "${eventType}" Space: "${space}" id: ${proposalId}`,
   );
 
-  const proposal = await entity.fetchProposal(proposalId);
+  // Fetch proposal
+  const proposal = await entity._fetchProposal(proposalId);
+
+  // Augment proposal object with the "link" property.
+  proposal.link = entity._generateLink(proposal);
 
   const localEventType = EventMap[eventType];
   events.emit(localEventType, proposal);
+};
+
+/**
+ * Fetches the proposal data from snapshot's GQL API.
+ *
+ * @param {string} proposalId The proposal id to fetch.
+ * @return {Object|void} Fetched proposal object.
+ * @private
+ */
+entity._fetchProposal = async (proposalId) => {
+  const data = await graphQuery(queryProposal(proposalId));
+
+  return data?.data?.proposal;
+};
+
+/**
+ * Generate link to a snapshot proposal.
+ *
+ * @param {Object} proposal Snapshot.org proposal object.
+ * @return {string} Link to the proposal.
+ * @private
+ */
+entity._generateLink = (proposal) => {
+  // https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN
+  return `https://snapshot.org/#/${proposal.space.name}/proposal/${proposal.id}`;
 };
