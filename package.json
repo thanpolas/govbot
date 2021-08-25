@@ -72,6 +72,7 @@
         "nocache": "3.0.1",
         "node-cron": "3.0.0",
         "pg": "8.7.1",
+        "truncate": "2.1.0",
         "twitter": "1.7.1",
         "uuid": "8.3.2",
         "validator": "13.6.0"
