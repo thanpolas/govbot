@@ -5,7 +5,7 @@
 const testLib = require('../lib/test.lib');
 
 const { proposalFix } = require('../fixtures/snapshot.fix');
-const { tweetResponse } = require('../fixtures/twitter.fix');
+const { tweetResponseFix } = require('../fixtures/twitter.fix');
 const {
   _handleEvent,
 } = require('../../app/entities/twitter/logic/handle-snapshot-events.ent');
@@ -17,7 +17,7 @@ describe('Twitter _handleEvent()', () => {
 
   describe(`Happy Path`, () => {
     beforeEach(() => {
-      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponse()));
+      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponseFix()));
     });
 
     test('Will handle a create webhook', async () => {
