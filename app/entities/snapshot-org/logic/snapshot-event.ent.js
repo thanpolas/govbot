@@ -20,7 +20,7 @@ const EventMap = {
   'proposal/created': SNAPSHOT_PROPOSAL_CREATED,
   'proposal/start': SNAPSHOT_PROPOSAL_START,
   'proposal/end': SNAPSHOT_PROPOSAL_END,
-  'proposal/deleted ': SNAPSHOT_PROPOSAL_DELETED,
+  'proposal/deleted': SNAPSHOT_PROPOSAL_DELETED,
 };
 
 const entity = (module.exports = {});
@@ -52,6 +52,7 @@ entity.handleWebhook = async (data) => {
   proposal.link = entity._generateLink(proposal);
 
   const localEventType = EventMap[eventType];
+
   events.emit(localEventType, proposal);
 };
 
