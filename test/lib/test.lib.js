@@ -2,9 +2,10 @@
  * @fileoverview Core testing library, must be included by all tests.
  */
 
+require('dotenv').config();
+
 const config = require('config');
 const faker = require('faker');
-require('dotenv').config();
 const request = require('supertest');
 
 const logger = require('../../app/services/log.service');
