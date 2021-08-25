@@ -1,6 +1,5 @@
 /**
- * @fileoverview Fixtures are your test data, they should be functions returning
- *   the values you need.
+ * @fileoverview Fixtures related to snapshot.org service.
  */
 
 const fix = (module.exports = {});
