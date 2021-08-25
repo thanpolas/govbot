@@ -18,10 +18,11 @@ const bootstrap = (module.exports = {});
  */
 bootstrap.init = async (bootOpts) => {
   await messageRouter.init();
+  await initTwitter();
+
   if (bootOpts.testing) {
     return;
   }
-  await initAdminRelay.init();
+  await initAdminRelay();
   await discordEnt.init();
-  initTwitter.init();
 };

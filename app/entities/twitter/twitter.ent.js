@@ -3,16 +3,19 @@
  * @see https://github.com/desmondmorris/node-twitter
  */
 
-const { init, isConnected } = require('./twitter.service');
+const { init: initService, isConnected } = require('./twitter.service');
+const { init: initSnapshot } = require('./logic/handle-snapshot-events.ent');
 
 const entity = (module.exports = {});
 
 entity.isConnected = isConnected;
 
 /**
- * Initialize the twitter service.
+ * Initialize the twitter service and handlers.
  *
+ * @return {Promise<void>} A Promise.
  */
-entity.init = () => {
-  init();
+entity.init = async () => {
+  initService();
+  await initSnapshot();
 };

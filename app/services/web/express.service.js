@@ -6,6 +6,7 @@ const path = require('path');
 
 const config = require('config');
 
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const corsGate = require('cors-gate');
@@ -58,6 +59,8 @@ expressService.init = async function (bootOpts) {
 
   // Sets "X-Content-Type-Options: nosniff".
   app.use(noSniff());
+
+  app.use(bodyParser.json());
 
   // Enable HTTP -> HTTPS redirects
   if (config.webserver.enforce_ssl) {

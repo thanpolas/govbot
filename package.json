@@ -51,7 +51,9 @@
         "testTimeout": 10000
     },
     "dependencies": {
+        "axios": "0.21.1",
         "bluebird": "3.7.2",
+        "body-parser": "1.19.0",
         "config": "3.3.6",
         "connection-string": "4.3.4",
         "cookie-parser": "1.4.5",
@@ -71,6 +73,7 @@
         "nocache": "3.0.1",
         "node-cron": "3.0.0",
         "pg": "8.7.1",
+        "truncate": "2.1.0",
         "twitter": "1.7.1",
         "uuid": "8.3.2",
         "validator": "13.6.0"

@@ -3,6 +3,7 @@
  */
 
 const { health } = require('../../entities/health-check');
+const { snapshotWebhookCtrl } = require('../../entities/snapshot-org');
 
 const router = (module.exports = {});
 
@@ -13,4 +14,5 @@ const router = (module.exports = {});
  */
 router.setup = (app) => {
   app.get('/health', health);
+  app.post('/snapshot-webhook', snapshotWebhookCtrl);
 };
