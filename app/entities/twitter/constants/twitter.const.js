@@ -11,11 +11,11 @@ const consts = (module.exports = {});
 consts.URL_LENGTH = 23;
 
 /**
- * @const {number} ELIPSES_LENGTH The size of the elipses (...) that will be used
+ * @const {number} ELIPSES_LENGTH The size of the elipses (…) that will be used
  *    at truncating.
  * @see https://github.com/evondev/truncateText
  */
-consts.ELIPSES_LENGTH = 3;
+consts.ELIPSES_LENGTH = 1;
 
 /**
  * @const {number} MAX_CHARS Maximum character limit for a tweet.
