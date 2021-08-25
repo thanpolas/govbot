@@ -1,8 +1,10 @@
 /**
  * @fileoverview Global values that need runtime calculation.
- *
  */
+
 const os = require('os');
+
+const config = require('config');
 
 const globals = (module.exports = {});
 
@@ -78,3 +80,12 @@ globals.isHeroku = [globals.Environments.HEROKU_PROD].indexOf(globals.env) >= 0;
  * @type {string}
  */
 globals.cwd = process.cwd();
+
+//
+// Discover proper port
+//
+if (process.env.PORT) {
+  globals.port = process.env.PORT;
+} else {
+  globals.port = config.webserver.port;
+}
