@@ -64,25 +64,25 @@ entity._handleEvent = async (eventType, proposal) => {
     let proposalName = '';
     switch (eventType) {
       case SNAPSHOT_PROPOSAL_CREATED:
-        messageTemplateSize = 34;
+        messageTemplateSize += 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
         message = `🆕 Proposal "${proposalName}" CREATED on Snapshot ${proposal.link}`;
         break;
       case SNAPSHOT_PROPOSAL_START:
-        messageTemplateSize = 33;
+        messageTemplateSize += 33;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
         message = `📢 Proposal "${proposalName}" ACTIVE on Snapshot ${proposal.link}`;
         break;
       case SNAPSHOT_PROPOSAL_END:
-        messageTemplateSize = 32;
+        messageTemplateSize += 32;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
         message = `⛔ Proposal "${proposalName}" ENDED on Snapshot ${proposal.link}`;
         break;
       case SNAPSHOT_PROPOSAL_DELETED:
-        messageTemplateSize = 34;
+        messageTemplateSize += 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
         message = `❌ Proposal "${proposalName}" DELETED on Snapshot`;
