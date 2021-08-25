@@ -64,28 +64,28 @@ entity._handleEvent = async (eventType, proposal) => {
     let proposalName = '';
     switch (eventType) {
       case SNAPSHOT_PROPOSAL_CREATED:
+        messageTemplateSize += 37;
+        availableSize = MAX_CHARS - messageTemplateSize;
+        proposalName = truncate(proposal.title, availableSize);
+        message = `🆕 Proposal CREATED on Snapshot:\n\n"${proposalName}"\n\n${proposal.link}`;
+        break;
+      case SNAPSHOT_PROPOSAL_START:
+        messageTemplateSize += 40;
+        availableSize = MAX_CHARS - messageTemplateSize;
+        proposalName = truncate(proposal.title, availableSize);
+        message = `📢 Proposal now ACTIVE on Snapshot:\n\n"${proposalName}"\n\n${proposal.link}`;
+        break;
+      case SNAPSHOT_PROPOSAL_END:
         messageTemplateSize += 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
-        message = `🆕 Proposal "${proposalName}" CREATED on Snapshot ${proposal.link}`;
-        break;
-      case SNAPSHOT_PROPOSAL_START:
-        messageTemplateSize += 33;
-        availableSize = MAX_CHARS - messageTemplateSize;
-        proposalName = truncate(proposal.title, availableSize);
-        message = `📢 Proposal "${proposalName}" ACTIVE on Snapshot ${proposal.link}`;
-        break;
-      case SNAPSHOT_PROPOSAL_END:
-        messageTemplateSize += 32;
-        availableSize = MAX_CHARS - messageTemplateSize;
-        proposalName = truncate(proposal.title, availableSize);
-        message = `⛔ Proposal "${proposalName}" ENDED on Snapshot ${proposal.link}`;
+        message = `⛔ Proposal ENDED on Snapshot\n\n"${proposalName}"\n\n${proposal.link}`;
         break;
       case SNAPSHOT_PROPOSAL_DELETED:
         messageTemplateSize += 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
-        message = `❌ Proposal "${proposalName}" DELETED on Snapshot`;
+        message = `❌ Proposal DELETED on Snapshot\n\n"${proposalName}"`;
         break;
       default:
         await log.warn(`_handleEvent() Bogus event type: "${eventType}"`);
@@ -94,11 +94,11 @@ entity._handleEvent = async (eventType, proposal) => {
 
     const res = await tweet.sendTweet(message);
 
-    await log.info(`Tweet sent for event CREATED, id ${res.id}`);
+    await log.info(`Tweet sent for event ${eventType}, twitter id ${res.id}`);
   } catch (ex) {
-    await log.error('_handleCreated Error', {
+    await log.error('_handleEvent Error', {
       error: ex,
-      custom: { proposal },
+      custom: { proposal, error: ex },
     });
   }
 };
