@@ -103,4 +103,4 @@ workflows:
             - eslint
           filters:
             branches:
-              only: /heroku-deployment/
+              only: /main/
