@@ -23,6 +23,6 @@ bootstrap.init = async (bootOpts) => {
   if (bootOpts.testing) {
     return;
   }
-  await initAdminRelay();
+  await initAdminRelay(bootOpts);
   // await discordEnt.init();
 };

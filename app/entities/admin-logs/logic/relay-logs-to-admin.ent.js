@@ -24,6 +24,10 @@ entity._logChannelErrors = null;
 entity._logChannelAlerts = null;
 
 entity.init = async () => {
+  if (!isConnected()) {
+    return;
+  }
+
   entity._logChannelMain = await getGuildChannel(
     config.discord.bot_log_channel_id,
   );
