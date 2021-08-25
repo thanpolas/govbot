@@ -8,10 +8,13 @@ const log = require('../../../services/log.service').get();
 
 const entity = (module.exports = {});
 
+/** @const {string} GQL_URL hardcode snapshot's url until we'll need GQL client for another endpoint */
+entity.GQL_URL = 'https://hub.snapshot.org/graphql';
+
 /**
  * Will query the graph.
  *
- * @param {Object} gqlQuery Standard formatted GQL query.
+ * @param {Object} gqlQuery GQL Query.
  * @return {Promise<Object|void>} A Promise with the fetched data or void
  *    if query failed.
  */
@@ -19,8 +22,8 @@ entity.graphQuery = async (gqlQuery) => {
   try {
     const axiosParams = {
       method: 'post',
-      url: gqlQuery.endpoint,
-      data: gqlQuery.query,
+      url: entity.GQL_URL,
+      data: gqlQuery,
     };
 
     const res = await axios(axiosParams);
