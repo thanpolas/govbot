@@ -79,13 +79,13 @@ entity._handleEvent = async (eventType, proposal) => {
         messageTemplateSize += 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
-        message = `⛔ Proposal ENDED on Snapshot\n\n"${proposalName}"\n\n${proposal.link}`;
+        message = `⛔ Proposal ENDED on Snapshot:\n\n"${proposalName}"\n\n${proposal.link}`;
         break;
       case SNAPSHOT_PROPOSAL_DELETED:
         messageTemplateSize += 34;
         availableSize = MAX_CHARS - messageTemplateSize;
         proposalName = truncate(proposal.title, availableSize);
-        message = `❌ Proposal DELETED on Snapshot\n\n"${proposalName}"`;
+        message = `❌ Proposal DELETED on Snapshot:\n\n"${proposalName}"`;
         break;
       default:
         await log.warn(`_handleEvent() Bogus event type: "${eventType}"`);
