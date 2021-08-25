@@ -23,6 +23,26 @@ This project supports [`.env` file][dotenv] which is on `.gitignore`
 for your convenience when developing on your local. Needed environment variables
 can be found on `.env-template` which you should copy to `.env` and edit.
 
+## Twitter Tokens
+
+Follow this guide to get twitter tokens:
+
+1. From the account you want the tweets to happen [apply for a Developer Account][twitter-apply]. This will take about a day and they might ask for followup questions.
+1. Once you have your developer account approved, [go to the developer portal and create an application][twitter-portal], do not mark down any keys or tokens at this step, just create the app.
+1. Once the app is created and you see it on your dashboard, you should see two icons, a "cog" (App settings) and a "key" (Keys and tokens).
+1. Click on the Cog (App Settings).
+1. Edit the "App Permissions" and make sure the permissions are "Read and Write".
+1. Go back to the Dashboard and click on the "key icon" (Keys and tokens).
+1. Regenerate your "consumer keys" and note both keys and values down in a safe and temporary document.
+1. Regenerate the "Access Token and Secret" and note both keys and values down in a safe and temporary document.
+
+With the keys available, you now need to populate the following environmental variables:
+
+-   `TWITTER_CONSUMER_KEY=...`
+-   `TWITTER_CONSUMER_SECRET=...`
+-   `TWITTER_ACCESS_TOKEN=...`
+-   `TWITTER_ACCESS_TOKEN_SECRET=...`
+
 # Development Operations / Maintenance
 
 ## Reset Local Database
@@ -80,3 +100,5 @@ Copyright © [Thanos Polychronakis][thanpolas] and Authors, Licensed under ISC.
 [dotenv]: https://github.com/motdotla/dotenv#readme
 [thanpolas]: https://github.com/thanpolas
 [tz]: https://momentjs.com/timezone
+[twitter-apply]: https://developer.twitter.com/en/apply-for-access
+[twitter-portal]: https://developer.twitter.com/en/portal/dashboard
