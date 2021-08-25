@@ -19,7 +19,7 @@ const ctrl = (module.exports = {});
 ctrl.snapshotWebhook = async (req, res, next) => {
   try {
     await handleWebhook(req.body);
-    res.json({ status: true });
+    res.json();
   } catch (ex) {
     log.error('Secret-update error', {
       viewer: req.viewer,
