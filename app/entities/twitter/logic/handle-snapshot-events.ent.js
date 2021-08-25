@@ -26,8 +26,10 @@ const entity = (module.exports = {});
 /**
  * Listen to events.
  *
+ * @return {Promise<void>} A Promise.
  */
-entity.init = () => {
+entity.init = async () => {
+  await log.info('Initializing snapshot event handler...');
   events.on(
     SNAPSHOT_PROPOSAL_CREATED,
     entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_CREATED),
