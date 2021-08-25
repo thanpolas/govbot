@@ -26,3 +26,5 @@ bootstrap.init = async (bootOpts) => {
   await initAdminRelay();
   // await discordEnt.init();
 };
+
+console.log('DEBUG:', process.env);
