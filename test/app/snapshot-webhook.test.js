@@ -30,11 +30,7 @@ describe('Snapshot Webhooks', () => {
 
       expect(res.status).toBe(200);
 
-      expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
-
-      const expectedMessage =
-        '🆕 Proposal CREATED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
-      expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
+      expect(tweet.sendTweet).toHaveBeenCalledTimes(0);
     });
 
     test('Will handle a start webhook', async () => {
@@ -74,11 +70,7 @@ describe('Snapshot Webhooks', () => {
 
       expect(res.status).toBe(200);
 
-      expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
-
-      const expectedMessage =
-        '❌ Proposal DELETED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"';
-      expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
+      expect(tweet.sendTweet).toHaveBeenCalledTimes(0);
     });
   });
 });
