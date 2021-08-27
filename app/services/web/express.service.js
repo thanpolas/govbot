@@ -8,8 +8,6 @@ const config = require('config');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const corsGate = require('cors-gate');
 const express = require('express');
 const enforce = require('express-sslify');
 const noCache = require('nocache');
@@ -66,30 +64,6 @@ expressService.init = async function (bootOpts) {
   if (config.webserver.enforce_ssl) {
     app.use(enforce.HTTPS({ trustProtoHeader: true }));
   }
-
-  // When Origin header not present, use "referer".
-  app.use(corsGate.originFallbackToReferrer());
-
-  // Setup CORS
-  app.use(
-    cors({
-      credentials: true,
-      origin: config.webserver.cors.allowed_origins,
-    }),
-  );
-
-  // prevent cross-origin requests from domains not permitted
-  // by the rules in CORS setup above.
-  app.use(
-    corsGate({
-      // require an Origin header, and reject request if missing
-      strict: true,
-      // permit GET and HEAD requests, even without an Origin header
-      allowSafe: true,
-      // the origin of the server
-      origin: config.webserver.backend_base_url,
-    }),
-  );
 
   // Setup express
   app.set('port', globals.port);
