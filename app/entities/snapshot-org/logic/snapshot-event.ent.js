@@ -45,6 +45,11 @@ entity.handleWebhook = async (data) => {
     `Webhook event. Type: "${eventType}" Space: "${space}" id: ${proposalId}`,
   );
 
+  // Only process START and END events.
+  if (!['proposal/start', 'proposal/end'].includes(eventType)) {
+    return;
+  }
+
   // Fetch proposal
   const proposal = await entity._fetchProposal(proposalId);
 
