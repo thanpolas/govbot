@@ -2,7 +2,7 @@
  * @fileoverview Bootsrap for Entities.
  */
 
-// const discordEnt = require('./discord');
+// const discordEnt = require('./discord-helpers');
 // const messageRouter = require('./message-router');
 const { init: initAdminRelay } = require('./admin-logs');
 const { init: initTwitter } = require('./twitter');

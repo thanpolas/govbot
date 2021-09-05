@@ -8,7 +8,7 @@ const format = require('date-fns/format');
 
 const { isConnected } = require('../../../services/discord.service');
 const globals = require('../../../utils/globals');
-const { getGuildChannel } = require('../../discord');
+const { getGuildChannel } = require('../../discord-helpers');
 const { formatMessage } = require('./generic-formatting.ent');
 const { handleErrors } = require('./handle-errors.ent');
 const { LogEvents } = require('../../events');
