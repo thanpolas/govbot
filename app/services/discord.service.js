@@ -51,6 +51,10 @@ discordService.init = async function (bootOpts) {
   if (bootOpts.testing) {
     return;
   }
+  if (config.discord.token === 'DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN') {
+    await log.warn('No discord bot token was detected, skipping discord init.');
+    return;
+  }
   return new Promise((resolve, reject) => {
     log.notice('Starting Discord Service...');
 

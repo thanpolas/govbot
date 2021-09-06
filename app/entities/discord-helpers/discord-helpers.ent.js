@@ -15,11 +15,7 @@ const {
   getMainChannel,
   sendMessageToChannels,
 } = require('./logic/channels.ent');
-const {
-  getAddressLink,
-  getTokenLink,
-  removeCommand,
-} = require('./logic/discord-helpers.ent');
+const { getLink, removeCommand } = require('./logic/discord-helpers.ent');
 
 const entity = (module.exports = {});
 
@@ -28,8 +24,7 @@ entity.getGuild = getGuild;
 entity.getGuildChannel = getGuildChannel;
 entity.getGuildMemberUid = getGuildMemberUid;
 entity.sendMessageToChannels = sendMessageToChannels;
-entity.getAddressLink = getAddressLink;
-entity.getTokenLink = getTokenLink;
+entity.getLink = getLink;
 entity.removeCommand = removeCommand;
 
 /**

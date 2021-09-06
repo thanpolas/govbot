@@ -8,11 +8,13 @@ const format = require('date-fns/format');
 
 const { isConnected } = require('../../../services/discord.service');
 const globals = require('../../../utils/globals');
-const { getGuildChannel } = require('../../discord');
+const { getGuildChannel } = require('../../discord-helpers');
 const { formatMessage } = require('./generic-formatting.ent');
 const { handleErrors } = require('./handle-errors.ent');
 const { LogEvents } = require('../../events');
 const { sendLog } = require('./send-message.ent');
+
+const log = require('../../../services/log.service').get();
 
 const entity = (module.exports = {});
 
@@ -25,6 +27,15 @@ entity._logChannelAlerts = null;
 
 entity.init = async () => {
   if (!isConnected()) {
+    return;
+  }
+
+  if (
+    !config.discord.bot_log_channel_id ||
+    !config.discord.bot_log_errors_channel_id ||
+    !config.discord.bot_log_alerts_channel_id
+  ) {
+    log.warn('Discord logging channels not configured, will not relay logs.');
     return;
   }
 
