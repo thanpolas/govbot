@@ -5,7 +5,7 @@
 const log = require('./services/log.service').get();
 
 // const cronService = require('./services/cron.service');
-// const discordService = require('./services/discord.service');
+const discordService = require('./services/discord.service');
 const entities = require('./entities');
 // const globals = require('./utils/globals');
 // const migrationService = require('./services/migration.service');
@@ -38,7 +38,7 @@ appServices.boot = async (bootOpts) => {
 
   // await postgresService.init();
 
-  // await discordService.init(bootOpts);
+  await discordService.init(bootOpts);
 
   // Launch task manager (cron) only on production.
   // if (globals.isProd) {
@@ -60,8 +60,8 @@ appServices.boot = async (bootOpts) => {
  */
 appServices.dispose = async () => {
   await disposeExpressService();
+  await discordService.dispose();
   // await postgresService.dispose();
-  // await discordService.dispose();
   // if (globals.isProd) {
   //   await cronService.dispose();
   // }
