@@ -28,6 +28,14 @@ This project supports [`.env` file][dotenv] which is on `.gitignore`
 for your convenience when developing on your local. Needed environment variables
 can be found on `.env-template` which you should copy to `.env` and edit.
 
+## Snapshot.org Webhook
+
+In coordination with the admins from [snapshot][snapshot], the [snapshot webhooks][snapshot_webhooks] need to POST to the following endpoint:
+
+```
+POST /snapshot-webhook
+```
+
 ## Twitter Tokens
 
 Follow this guide to get twitter tokens:
@@ -94,3 +102,5 @@ Copyright © [Thanos Polychronakis][thanpolas] and Authors, Licensed under ISC.
 [twitter-portal]: https://developer.twitter.com/en/portal/dashboard
 [uniswap]: https://uniswap.org/
 [balancer]: https://balancer.fi/
+[snapshot]: https://snapshot.org/
+[snapshot_webhooks]: https://docs.snapshot.org/webhooks
