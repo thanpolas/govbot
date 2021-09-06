@@ -6,6 +6,7 @@
 // const messageRouter = require('./message-router');
 const { init: initAdminRelay } = require('./admin-logs');
 const { init: initTwitter } = require('./twitter');
+const { init: initDiscordRelay } = require('./discord-relay');
 
 const bootstrap = (module.exports = {});
 
@@ -19,6 +20,7 @@ const bootstrap = (module.exports = {});
 bootstrap.init = async (bootOpts) => {
   // await messageRouter.init();
   await initTwitter();
+  await initDiscordRelay();
 
   if (bootOpts.testing) {
     return;
