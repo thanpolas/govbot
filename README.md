@@ -1,9 +1,14 @@
-# Uniswap Governance Bot
+# DeFi Governance Bot
 
-> Informs and populates information regarding uniswap governance.
+> Informs and populates information regarding DAO governance.
 
 [![CircleCI](https://circleci.com/gh/thanpolas/govbot.svg?style=svg)](https://circleci.com/gh/thanpolas/govbot)
 [![codecov](https://codecov.io/gh/thanpolas/govbot/branch/main/graph/badge.svg?token=GMSGENFPYS)](https://codecov.io/gh/thanpolas/govbot)
+
+This project has kindly been supported and sponsored by:
+
+-   [Uniswap DAO][uniswap].
+-   [Balancer DAO][balancer].
 
 # How To Install
 
@@ -43,40 +48,26 @@ With the keys available, you now need to populate the following environmental va
 -   `TWITTER_ACCESS_TOKEN=...`
 -   `TWITTER_ACCESS_TOKEN_SECRET=...`
 
+## Discord Bot Tokens
+
+Follow this guide to create your discord bot and get the tokens:
+
+1. Go to the developer portal: https://discord.com/developers/applications
+1. Create Application.
+1. Go to "Bot" Menu and add expected permissions.
+1. Go to "OAuth2" menu and select the "bot" scope.
+1. Copy the OAuth2 URL and paste it on the browser.
+1. Help on creating a bot: https://discordpy.readthedocs.io/en/latest/discord.html
+
+With the bot token available, you now need to populate the following environment variable:
+
+-   `DISCORD_BOT_TOKEN`
+
+After you have invited the bot to your server, you need to get the id of the channel you wish the bot to relay the messages and set the following environment variable:
+
+-   `DISCORD_GOV_CHANNEL_ID`
+
 # Development Operations / Maintenance
-
-## Reset Local Database
-
-```
-npm run db:reset:local
-```
-
-## Database Migration Commands
-
-### Create a New Migration Script
-
-```
-npm run knex:create_migration <name of migration>
-```
-
-### Run Migrations
-
-```
-npm run knex:migrate
-```
-
-## Running Tests Locally
-
-Use the `jest` command to run all tests or specific ones.
-
-### Reset Test Database
-
-The tests will look for the `NUKE_TEST_DB` environment variable to be set to
-initiate the test database nuking and re-population, use it like so:
-
-```bash
-NUKE_TEST_DB=1 jest
-```
 
 ## Update Node Version
 
@@ -85,7 +76,6 @@ When a new node version is available you need to updated it in the following:
 -   `/package.json`
 -   `/.nvmrc`
 -   `/.circleci/config.yml`
--   `/Dockerfile`
 
 # Deployment
 
@@ -102,3 +92,5 @@ Copyright © [Thanos Polychronakis][thanpolas] and Authors, Licensed under ISC.
 [tz]: https://momentjs.com/timezone
 [twitter-apply]: https://developer.twitter.com/en/apply-for-access
 [twitter-portal]: https://developer.twitter.com/en/portal/dashboard
+[uniswap]: https://uniswap.org/
+[balancer]: https://balancer.fi/
