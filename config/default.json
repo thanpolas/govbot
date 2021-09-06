@@ -19,7 +19,10 @@
         }
     },
     "discord": {
-        "token": "DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN"
+        "token": "DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN",
+        "gov_channel_id": "DO NOT SET - USE ENV VAR: DISCORD_GOV_CHANNEL_ID",
+        "embed_color_proposal_start": "0x00c711",
+        "embed_color_proposal_end": "0x850000"
     },
     "twitter": {
         "consumer_key": "DO NOT SET - USE ENV VAR: TWITTER_CONSUMER_KEY",

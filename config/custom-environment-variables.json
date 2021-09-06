@@ -3,7 +3,8 @@
         "connection_string": "DATABASE_URL"
     },
     "discord": {
-        "token": "DISCORD_BOT_TOKEN"
+        "token": "DISCORD_BOT_TOKEN",
+        "gov_channel_id": "DISCORD_GOV_CHANNEL_ID"
     },
     "twitter": {
         "consumer_key": "TWITTER_CONSUMER_KEY",
