@@ -8,6 +8,7 @@ const { MessageEmbed } = require('discord.js');
 
 const { events, eventTypes } = require('../../events');
 const { getLink, getGuildChannel } = require('../../discord-helpers');
+const { isConnected } = require('../../../services/discord.service');
 
 const log = require('../../../services/log.service').get();
 
@@ -22,6 +23,10 @@ const entity = (module.exports = {});
  */
 entity.init = async () => {
   await log.info('Initializing snapshot event handler...');
+  if (!isConnected()) {
+    await log.warn('Discord service not started, discord relay will not init.');
+    return;
+  }
   events.on(
     SNAPSHOT_PROPOSAL_START,
     entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_START),
@@ -72,13 +77,13 @@ entity._createEmbedMessage = async (eventType, proposal) => {
     case SNAPSHOT_PROPOSAL_START:
       embedMessage
         .setTitle(`📢 Proposal now ACTIVE on Snapshot`)
-        .addField('Proposal', embedLink)
+        .addField('Proposal:', embedLink)
         .setColor(config.discord.embed_color_proposal_start);
       break;
     case SNAPSHOT_PROPOSAL_END:
       embedMessage
         .setTitle(`⛔ Proposal ENDED on Snapshot`)
-        .addField('Proposal', embedLink)
+        .addField('Proposal:', embedLink)
         .setColor(config.discord.embed_color_proposal_end);
       break;
     default:
