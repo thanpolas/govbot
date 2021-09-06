@@ -14,6 +14,8 @@ const { handleErrors } = require('./handle-errors.ent');
 const { LogEvents } = require('../../events');
 const { sendLog } = require('./send-message.ent');
 
+const log = require('../../../services/log.service').get();
+
 const entity = (module.exports = {});
 
 /** @type {DiscordChannel?} Main log channel. */
@@ -25,6 +27,15 @@ entity._logChannelAlerts = null;
 
 entity.init = async () => {
   if (!isConnected()) {
+    return;
+  }
+
+  if (
+    !config.discord.bot_log_channel_id ||
+    !config.discord.bot_log_errors_channel_id ||
+    !config.discord.bot_log_alerts_channel_id
+  ) {
+    log.warn('Discord logging channels not configured, will not relay logs.');
     return;
   }
 
