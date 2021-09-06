@@ -9,52 +9,19 @@
 const entity = (module.exports = {});
 
 /**
- * Will format the address appropriately and link it to the respective
- * explorer depending on the network.
+ * Will return a discord link for embedded messages.
  *
- * @param {Object} network The token's network object.
- * @param {string} address The address to link.
- * @param {string=} text Optionally define the text to use as label for the link.
+ * @param {string} label The label to show.
+ * @param {string} link The link to use.
+ * @param {string=} optTooltip define a custom tooltip.
  * @return {string} Properly formated link for embed message.
  * @private
  */
-entity.getAddressLink = (network, address, text = '') => {
-  const tokenUrl = `${network.explorer}address/${address}`;
+entity.getLink = (label, link, optTooltip) => {
+  const tooltip = optTooltip || label;
 
-  let label = text;
-
-  if (!label) {
-    const firstPart = address.substr(0, 4);
-    const lastPart = address.substr(-4);
-    label = `${firstPart}...${lastPart}`;
-  }
-
-  const link = `[${label}](${tokenUrl} '${address}')`;
-  return link;
-};
-
-/**
- * Will format the token's address appropriately and link it to the respective
- * explorer depending on the network.
- *
- * @param {Object} network The token's network object.
- * @param {string} address The address to link.
- * @param {string=} text Optionally define the text to use as label for the link.
- * @return {string} Properly formated link for embed message.
- * @private
- */
-entity.getTokenLink = (network, address, text = '') => {
-  const tokenUrl = `${network.explorer}token/${address}`;
-
-  let label = text;
-
-  if (!label) {
-    const firstPart = address.substr(0, 4);
-    const lastPart = address.substr(-4);
-    label = `${firstPart}...${lastPart}`;
-  }
-  const link = `[${label}](${tokenUrl} '${address}')`;
-  return link;
+  const embedLink = `[${label}](${link} '${tooltip}')`;
+  return embedLink;
 };
 
 /**
