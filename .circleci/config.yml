@@ -71,8 +71,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Deploy to Heroku for production.
+          name: Deploy to Uniswap Heroku for production.
           command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/uniswap-govbot.git main -f
+      - run:
+          name: Deploy to Balancer Heroku for production.
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/defi-govbot.git main -f
+
 
 workflows:
   version: 2
