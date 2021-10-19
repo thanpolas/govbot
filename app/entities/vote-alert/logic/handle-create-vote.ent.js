@@ -2,6 +2,8 @@
  * @fileoverview Handles vote creation events, create appropriate record.
  */
 
+const config = require('config');
+
 const { events, eventTypes } = require('../../events');
 
 const { create } = require('../sql/vote-ends-alert.sql');
@@ -36,10 +38,12 @@ entity._handleCreateEvent = async (proposal) => {
     const expiresJSTimestamp = Number(proposal.expire) * 1000;
     const expires_at = new Date(expiresJSTimestamp);
     // Alert 1 hour before voting expires
-    const alert_at = expiresJSTimestamp - 60 * 60 * 1000;
+    const alert_at = expiresJSTimestamp - config.app.alert_before_ms;
 
     const alertData = {
       space: proposal.space,
+      link: proposal.link,
+      title: proposal.title,
       expires_at,
       alert_at,
     };
