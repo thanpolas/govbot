@@ -10,20 +10,14 @@ const {
   webhookEndFix,
   webhookDeletedFix,
 } = require('../fixtures/snapshot.fix');
-const { tweetResponseFix } = require('../fixtures/twitter.fix');
-const tweet = require('../../app/entities/twitter/logic/send-tweet.ent');
-const discord = require('../../app/entities/discord-relay/logic/handle-snapshot-events.ent');
+const { dispatchesMock } = require('../mocks/dispatches.mock');
 
 describe('Snapshot Webhooks', () => {
   testLib.init();
 
   describe(`Happy Path`, () => {
-    beforeEach(() => {
-      tweet.sendTweet = jest.fn(() => Promise.resolve(tweetResponseFix()));
-      discord.sendEmbedMessage = jest.fn(() => Promise.resolve());
-    });
-
     test('Will handle a create webhook', async () => {
+      const { tweetMock, discordMock } = dispatchesMock();
       const agent = testLib.getAgent();
 
       const res = await agent
@@ -32,41 +26,44 @@ describe('Snapshot Webhooks', () => {
 
       expect(res.status).toBe(200);
 
-      expect(tweet.sendTweet).toHaveBeenCalledTimes(0);
-      expect(discord.sendEmbedMessage).toHaveBeenCalledTimes(0);
+      expect(tweetMock).toHaveBeenCalledTimes(0);
+      expect(discordMock).toHaveBeenCalledTimes(0);
     });
 
     test('Will handle a start webhook', async () => {
+      const { tweetMock, discordMock } = dispatchesMock();
       const agent = testLib.getAgent();
 
       const res = await agent.post('/snapshot-webhook').send(webhookStartFix());
 
       expect(res.status).toBe(200);
 
-      expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
-      expect(discord.sendEmbedMessage).toHaveBeenCalledTimes(1);
+      expect(tweetMock).toHaveBeenCalledTimes(1);
+      expect(discordMock).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
         '📢 Proposal now ACTIVE on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
-      expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
+      expect(tweetMock).toHaveBeenCalledWith(expectedMessage);
     });
 
     test('Will handle an end webhook', async () => {
+      const { tweetMock, discordMock } = dispatchesMock();
       const agent = testLib.getAgent();
 
       const res = await agent.post('/snapshot-webhook').send(webhookEndFix());
 
       expect(res.status).toBe(200);
 
-      expect(tweet.sendTweet).toHaveBeenCalledTimes(1);
-      expect(discord.sendEmbedMessage).toHaveBeenCalledTimes(1);
+      expect(tweetMock).toHaveBeenCalledTimes(1);
+      expect(discordMock).toHaveBeenCalledTimes(1);
 
       const expectedMessage =
         '⛔ Proposal ENDED on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
-      expect(tweet.sendTweet).toHaveBeenCalledWith(expectedMessage);
+      expect(tweetMock).toHaveBeenCalledWith(expectedMessage);
     });
 
     test('Will handle a delete webhook', async () => {
+      const { tweetMock, discordMock } = dispatchesMock();
       const agent = testLib.getAgent();
 
       const res = await agent
@@ -75,8 +72,8 @@ describe('Snapshot Webhooks', () => {
 
       expect(res.status).toBe(200);
 
-      expect(tweet.sendTweet).toHaveBeenCalledTimes(0);
-      expect(discord.sendEmbedMessage).toHaveBeenCalledTimes(0);
+      expect(tweetMock).toHaveBeenCalledTimes(0);
+      expect(discordMock).toHaveBeenCalledTimes(0);
     });
   });
 });
