@@ -2,12 +2,12 @@
  * @fileoverview Will check if alert[s] are due and dispatch them.
  */
 
-const { config } = require('bluebird');
+const config = require('config');
 const BPromise = require('bluebird');
 
 const { getAlerts, update } = require('../sql/vote-ends-alert.sql');
-const { sendTweet, prepareMessage } = require('../../twitter');
-const { createEmbedMessage, sendEmbedMessage } = require('../../discord-relay');
+const twitterEnt = require('../../twitter');
+const discordEnt = require('../../discord-relay');
 const { eventTypes } = require('../../events');
 
 const log = require('../../../services/log.service').get();
@@ -24,12 +24,13 @@ const entity = (module.exports = {});
 entity.checkForAlert = async () => {
   try {
     const allPendingAlerts = await getAlerts();
+
     if (!allPendingAlerts.length) {
       return;
     }
 
     const pendingAlerts = allPendingAlerts.filter((alert) => {
-      return config.apply.spaces_to_alert.includes(alert.space);
+      return config.app.spaces_to_alert.includes(alert.space);
     });
 
     if (!pendingAlerts.length) {
@@ -56,7 +57,7 @@ entity.checkForAlert = async () => {
  * @private
  */
 entity._dispatchAlert = async (alertRecord) => {
-  const [tweeter, discord] = Promise.allSettled([
+  const [tweeter, discord] = await Promise.allSettled([
     entity._dispatchTweet(alertRecord),
     entity._dispatchDiscord(alertRecord),
   ]);
@@ -67,6 +68,20 @@ entity._dispatchAlert = async (alertRecord) => {
     };
 
     await update(alertRecord.id, updateData);
+    return;
+  }
+
+  // an error occured, figure out where and why
+  if (tweeter.status === 'rejected') {
+    await log.error('Tweeter vote ends alert failed', {
+      error: tweeter.reason,
+    });
+  }
+
+  if (discord.status === 'rejected') {
+    await log.error('Discord vote ends alert failed', {
+      error: discord.reason,
+    });
   }
 };
 
@@ -78,13 +93,13 @@ entity._dispatchAlert = async (alertRecord) => {
  * @private
  */
 entity._dispatchTweet = async (alertRecord) => {
-  const tweetMessage = prepareMessage(
+  const tweetMessage = twitterEnt.prepareMessage(
     '⏰ Less than an hour left to vote on',
     alertRecord.title,
     alertRecord.link,
   );
 
-  await sendTweet(tweetMessage);
+  await twitterEnt.sendTweet(tweetMessage);
 
   const updateData = {
     alert_twitter_dispatched: true,
@@ -101,11 +116,11 @@ entity._dispatchTweet = async (alertRecord) => {
  * @private
  */
 entity._dispatchDiscord = async (alertRecord) => {
-  const embedMessage = await createEmbedMessage(
+  const embedMessage = await discordEnt.createEmbedMessage(
     PROPOSAL_ENDS_IN_ONE_HOUR,
     alertRecord,
   );
-  await sendEmbedMessage(embedMessage);
+  await discordEnt.sendEmbedMessage(embedMessage);
 
   const updateData = {
     alert_discord_dispatched: true,
