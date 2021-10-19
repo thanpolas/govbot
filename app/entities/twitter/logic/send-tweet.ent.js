@@ -37,7 +37,7 @@ entity.sendTweet = async (status) => {
 entity.prepareMessage = (rawMessage, proposalTitle, proposalLink) => {
   let messageTemplateSize = URL_LENGTH + ELIPSES_LENGTH;
   messageTemplateSize += rawMessage.length;
-  messageTemplateSize += 5; // colon and the 4 newlines
+  messageTemplateSize += 7; // 1 colon, 2 quotes and the 4 newlines
 
   const availableSize = MAX_CHARS - messageTemplateSize;
 
