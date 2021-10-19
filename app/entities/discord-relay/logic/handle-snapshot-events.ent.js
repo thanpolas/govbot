@@ -38,27 +38,18 @@ entity.init = async () => {
 };
 
 /**
- * Handles snapshot events, needs to handle own errors.
+ * Sends an embed message to the appropriate channel.
  *
- * @param {string} eventType The event type to handle.
- * @param {Object} proposal The snapshot proposal object.
- * @return {Promise<void>} A Promise.
- * @private
+ * @param {Object} embedMessage Discord embed message.
+ * @return {Promise<void>}
  */
-entity._handleEvent = async (eventType, proposal) => {
-  try {
-    const embedMessage = await entity._createEmbedMessage(eventType, proposal);
-    const discordChannel = await getGuildChannel(config.discord.gov_channel_id);
-
-    await discordChannel.send({ embeds: [embedMessage] });
-
-    await log.info(`Discord message sent for event ${eventType}`);
-  } catch (ex) {
-    await log.error('_handleEvent Error', {
-      error: ex,
-      custom: { proposal, error: ex },
-    });
+entity.sendEmbedMessage = async (embedMessage) => {
+  if (!isConnected()) {
+    return;
   }
+  const discordChannel = await getGuildChannel(config.discord.gov_channel_id);
+
+  await discordChannel.send({ embeds: [embedMessage] });
 };
 
 /**
@@ -67,9 +58,8 @@ entity._handleEvent = async (eventType, proposal) => {
  * @param {string} eventType The event type to handle.
  * @param {Object} proposal The snapshot proposal object.
  * @return {Promise<DiscordMessageEmber>} The embed message.
- * @private
  */
-entity._createEmbedMessage = async (eventType, proposal) => {
+entity.createEmbedMessage = async (eventType, proposal) => {
   const embedMessage = new MessageEmbed();
   const embedLink = getLink(proposal.title, proposal.link, 'Go to proposal');
 
@@ -92,4 +82,26 @@ entity._createEmbedMessage = async (eventType, proposal) => {
   }
 
   return embedMessage;
+};
+
+/**
+ * Handles snapshot events, needs to handle own errors.
+ *
+ * @param {string} eventType The event type to handle.
+ * @param {Object} proposal The snapshot proposal object.
+ * @return {Promise<void>} A Promise.
+ * @private
+ */
+entity._handleEvent = async (eventType, proposal) => {
+  try {
+    const embedMessage = await entity.createEmbedMessage(eventType, proposal);
+    await entity.sendEmbedMessage(embedMessage);
+
+    await log.info(`Discord message sent for event ${eventType}`);
+  } catch (ex) {
+    await log.error('_handleEvent Error', {
+      error: ex,
+      custom: { proposal, error: ex },
+    });
+  }
 };
