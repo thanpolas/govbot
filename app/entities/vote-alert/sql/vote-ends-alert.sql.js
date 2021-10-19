@@ -2,8 +2,6 @@
  * @fileoverview Alert on vote ending table.
  */
 
-const config = require('config');
-
 const { db } = require('../../../services/postgres.service');
 
 const sql = (module.exports = {});
