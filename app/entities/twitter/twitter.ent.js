@@ -5,10 +5,13 @@
 
 const { init: initService, isConnected } = require('./twitter.service');
 const { init: initSnapshot } = require('./logic/handle-snapshot-events.ent');
+const { sendTweet, prepareMessage } = require('./logic/send-tweet.ent');
 
 const entity = (module.exports = {});
 
 entity.isConnected = isConnected;
+entity.sendTweet = sendTweet;
+entity.prepareMessage = prepareMessage;
 
 /**
  * Initialize the twitter service and handlers.
