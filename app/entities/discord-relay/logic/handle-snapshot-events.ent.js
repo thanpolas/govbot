@@ -12,7 +12,11 @@ const { isConnected } = require('../../../services/discord.service');
 
 const log = require('../../../services/log.service').get();
 
-const { SNAPSHOT_PROPOSAL_START, SNAPSHOT_PROPOSAL_END } = eventTypes;
+const {
+  SNAPSHOT_PROPOSAL_START,
+  SNAPSHOT_PROPOSAL_END,
+  PROPOSAL_ENDS_IN_ONE_HOUR,
+} = eventTypes;
 
 const entity = (module.exports = {});
 
@@ -73,6 +77,12 @@ entity.createEmbedMessage = async (eventType, proposal) => {
     case SNAPSHOT_PROPOSAL_END:
       embedMessage
         .setTitle(`⛔ Proposal ENDED on Snapshot`)
+        .addField('Proposal:', embedLink)
+        .setColor(config.discord.embed_color_proposal_end);
+      break;
+    case PROPOSAL_ENDS_IN_ONE_HOUR:
+      embedMessage
+        .setTitle(`⏰ Less than an hour left to vote on`)
         .addField('Proposal:', embedLink)
         .setColor(config.discord.embed_color_proposal_end);
       break;
