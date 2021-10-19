@@ -92,12 +92,12 @@ sql.update = async (id, input = {}, tx) => {
  * @return {Promise<Array<Object|void>>} A Promise with the record[s] if found.
  */
 sql.getAlerts = async (tx) => {
-  const alertTime = new Date(new Date() - config.app.alert_before_ms);
+  const alertTime = new Date();
 
   const statement = sql
     .getSelect()
     .where('expires_at', '>', db().fn.now())
-    .andWhere('alert_at', '<', alertTime)
+    .andWhere('alert_at', '<', alertTime.toUTCString())
     .andWhere('alert_done', false);
 
   if (tx) {
