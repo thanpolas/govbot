@@ -2,6 +2,8 @@
  * @fileoverview Alert on vote ending table.
  */
 
+const config = require('config');
+
 const { db } = require('../../../services/postgres.service');
 
 const sql = (module.exports = {});
@@ -21,12 +23,15 @@ sql.getSelect = () => {
     .select(
       `${TABLE}.id`,
       `${TABLE}.space`,
+      `${TABLE}.title`,
+      `${TABLE}.link`,
 
       `${TABLE}.expires_at`,
       `${TABLE}.alert_at`,
 
       `${TABLE}.alert_twitter_dispatched`,
       `${TABLE}.alert_discord_dispatched`,
+      `${TABLE}.alert_done`,
 
       `${TABLE}.created_at`,
       `${TABLE}.updated_at`,
@@ -81,21 +86,24 @@ sql.update = async (id, input = {}, tx) => {
 };
 
 /**
- * Get record by its chain_id and lp_token_address.
+ * Get records to be alerted for.
  *
- * @param {Array<string>} recordTuple The record ID tuple [chain_id, lp_token_address].
  * @param {Object=} tx Transaction.
- * @return {Promise<Object|void>} A Promise with the record if found.
+ * @return {Promise<Array<Object|void>>} A Promise with the record[s] if found.
  */
-sql.getAlerts = async (recordTuple, tx) => {
-  const [chain_id, lp_token_address] = recordTuple;
+sql.getAlerts = async (tx) => {
+  const alertTime = new Date(new Date() - config.app.alert_before_ms);
 
-  const statement = sql.getSelect().where({ chain_id, lp_token_address });
+  const statement = sql
+    .getSelect()
+    .where('expires_at', '>', db().fn.now())
+    .andWhere('alert_at', '<', alertTime)
+    .andWhere('alert_done', false);
 
   if (tx) {
     statement.transacting(tx);
   }
 
-  const [result] = await statement;
+  const result = await statement;
   return result;
 };
