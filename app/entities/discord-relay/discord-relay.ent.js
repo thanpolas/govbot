@@ -2,9 +2,16 @@
  * @fileoverview Discord relay snapshot proposals.
  */
 
-const { init: initSnapshot } = require('./logic/handle-snapshot-events.ent');
+const {
+  init: initSnapshot,
+  createEmbedMessage,
+  sendEmbedMessage,
+} = require('./logic/handle-snapshot-events.ent');
 
 const entity = (module.exports = {});
+
+entity.createEmbedMessage = createEmbedMessage;
+entity.sendEmbedMessage = sendEmbedMessage;
 
 /**
  * Initialize the twitter service and handlers.

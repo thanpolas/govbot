@@ -29,5 +29,13 @@
         "consumer_secret": "DO NOT SET - USE ENV VAR: TWITTER_conSUMER_SECRET",
         "access_token": "DO NOT SET - USE ENV VAR: TWITTER_ACCESS_TOKEN",
         "access_token_secret": "DO NOT SET - USE ENV VAR: TWITTER_ACCESS_TOKEN_SECRET"
+    },
+    "app": {
+        "timezone": "Europe/Athens",
+        "alert_before_ms": 3600000,
+        "spaces_to_alert": [
+            "balancer.eth",
+            "uniswap"
+        ]
     }
 }

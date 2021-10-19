@@ -17,6 +17,7 @@ gql.queryProposal = (proposalId) => {
     id
     created
     space {
+      id
       name
       network
     }

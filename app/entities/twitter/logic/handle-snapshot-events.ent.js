@@ -1,16 +1,9 @@
 /**
  * @fileoverview Handles incoming snapshot events from webhook calls.
  */
-const truncate = require('truncate');
 
 const { events, eventTypes } = require('../../events');
 const tweet = require('./send-tweet.ent');
-
-const {
-  MAX_CHARS,
-  URL_LENGTH,
-  ELIPSES_LENGTH,
-} = require('../constants/twitter.const');
 
 const log = require('../../../services/log.service').get();
 
@@ -59,33 +52,34 @@ entity.init = async () => {
 entity._handleEvent = async (eventType, proposal) => {
   try {
     let message = '';
-    let messageTemplateSize = URL_LENGTH + ELIPSES_LENGTH;
-    let availableSize = 0;
-    let proposalName = '';
     switch (eventType) {
       case SNAPSHOT_PROPOSAL_CREATED:
-        messageTemplateSize += 37;
-        availableSize = MAX_CHARS - messageTemplateSize;
-        proposalName = truncate(proposal.title, availableSize);
-        message = `🆕 Proposal CREATED on Snapshot:\n\n"${proposalName}"\n\n${proposal.link}`;
+        message = tweet.prepareMessage(
+          '🆕 Proposal CREATED on Snapshot',
+          proposal.title,
+          proposal.link,
+        );
         break;
       case SNAPSHOT_PROPOSAL_START:
-        messageTemplateSize += 40;
-        availableSize = MAX_CHARS - messageTemplateSize;
-        proposalName = truncate(proposal.title, availableSize);
-        message = `📢 Proposal now ACTIVE on Snapshot:\n\n"${proposalName}"\n\n${proposal.link}`;
+        message = tweet.prepareMessage(
+          '📢 Proposal now ACTIVE on Snapshot',
+          proposal.title,
+          proposal.link,
+        );
         break;
       case SNAPSHOT_PROPOSAL_END:
-        messageTemplateSize += 34;
-        availableSize = MAX_CHARS - messageTemplateSize;
-        proposalName = truncate(proposal.title, availableSize);
-        message = `⛔ Proposal ENDED on Snapshot:\n\n"${proposalName}"\n\n${proposal.link}`;
+        message = tweet.prepareMessage(
+          '⛔ Proposal ENDED on Snapshot',
+          proposal.title,
+          proposal.link,
+        );
         break;
       case SNAPSHOT_PROPOSAL_DELETED:
-        messageTemplateSize += 34;
-        availableSize = MAX_CHARS - messageTemplateSize;
-        proposalName = truncate(proposal.title, availableSize);
-        message = `❌ Proposal DELETED on Snapshot:\n\n"${proposalName}"`;
+        message = tweet.prepareMessage(
+          '❌ Proposal DELETED on Snapshot',
+          proposal.title,
+          proposal.link,
+        );
         break;
       default:
         await log.warn(`_handleEvent() Bogus event type: "${eventType}"`);
