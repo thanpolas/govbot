@@ -10,7 +10,7 @@ const { create } = require('../sql/vote-ends-alert.sql');
 
 const log = require('../../../services/log.service').get();
 
-const { SNAPSHOT_PROPOSAL_CREATED } = eventTypes;
+const { SNAPSHOT_PROPOSAL_START } = eventTypes;
 
 const entity = (module.exports = {});
 
@@ -21,7 +21,7 @@ const entity = (module.exports = {});
  */
 entity.init = async () => {
   await log.info('Initializing vote alert, proposal create event handler...');
-  events.on(SNAPSHOT_PROPOSAL_CREATED, entity._handleCreateEvent);
+  events.on(SNAPSHOT_PROPOSAL_START, entity._handleCreateEvent);
 };
 
 /**
@@ -35,13 +35,13 @@ entity.init = async () => {
  */
 entity._handleCreateEvent = async (proposal) => {
   try {
-    const expiresJSTimestamp = Number(proposal.expire) * 1000;
+    const expiresJSTimestamp = Number(proposal.end) * 1000;
     const expires_at = new Date(expiresJSTimestamp);
     // Alert 1 hour before voting expires
-    const alert_at = expiresJSTimestamp - config.app.alert_before_ms;
+    const alert_at = new Date(expiresJSTimestamp - config.app.alert_before_ms);
 
     const alertData = {
-      space: proposal.space,
+      space: proposal.space.id,
       link: proposal.link,
       title: proposal.title,
       expires_at,
