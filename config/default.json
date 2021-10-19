@@ -34,7 +34,8 @@
         "timezone": "Europe/Athens",
         "alert_before_ms": 3600000,
         "spaces_to_alert": [
-            "balancer"
+            "balancer.eth",
+            "uniswap"
         ]
     }
 }
