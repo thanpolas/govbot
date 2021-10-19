@@ -8,10 +8,13 @@ exports.up = async function (knex) {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 
     table.string('space').notNullable();
+    table.string('link').notNullable();
+    table.string('title').notNullable();
     table.timestamp('expires_at').notNullable();
     table.timestamp('alert_at').notNullable();
     table.boolean('alert_twitter_dispatched').notNullable.defaultTo(false);
     table.boolean('alert_discord_dispatched').notNullable.defaultTo(false);
+    table.boolean('alert_done').notNullable.defaultTo(false);
 
     defaultFields(table, knex);
   });
