@@ -12,9 +12,9 @@ exports.up = async function (knex) {
     table.string('title').notNullable();
     table.timestamp('expires_at').notNullable();
     table.timestamp('alert_at').notNullable();
-    table.boolean('alert_twitter_dispatched').notNullable.defaultTo(false);
-    table.boolean('alert_discord_dispatched').notNullable.defaultTo(false);
-    table.boolean('alert_done').notNullable.defaultTo(false);
+    table.boolean('alert_twitter_dispatched').notNullable().defaultTo(false);
+    table.boolean('alert_discord_dispatched').notNullable().defaultTo(false);
+    table.boolean('alert_done').notNullable().defaultTo(false);
 
     defaultFields(table, knex);
   });
