@@ -77,6 +77,39 @@ After you have invited the bot to your server, you need to get the id of the cha
 
 # Development Operations / Maintenance
 
+## Reset Local Database
+
+```
+npm run db:reset:local
+```
+
+## Database Migration Commands
+
+### Create a New Migration Script
+
+```
+npm run knex:create_migration <name of migration>
+```
+
+### Run Migrations
+
+```
+npm run knex:migrate
+```
+
+## Running Tests Locally
+
+Use the `jest` command to run all tests or specific ones.
+
+### Reset Test Database
+
+The tests will look for the `NUKE_TEST_DB` environment variable to be set to
+initiate the test database nuking and re-population, use it like so:
+
+```bash
+NUKE_TEST_DB=1 jest
+```
+
 ## Update Node Version
 
 When a new node version is available you need to updated it in the following:
