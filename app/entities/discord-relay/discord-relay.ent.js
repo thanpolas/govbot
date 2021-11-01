@@ -14,7 +14,7 @@ entity.createEmbedMessage = createEmbedMessage;
 entity.sendEmbedMessage = sendEmbedMessage;
 
 /**
- * Initialize the twitter service and handlers.
+ * Initialize the discord service and handlers.
  *
  * @return {Promise<void>} A Promise.
  */
