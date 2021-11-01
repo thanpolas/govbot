@@ -4,24 +4,29 @@
  */
 
 const truncate = require('truncate');
+const config = require('config');
 
 const { getClient } = require('../twitter.service');
+const { Protocols } = require('../constants/protocols.const');
 const {
   MAX_CHARS,
   URL_LENGTH,
   ELIPSES_LENGTH,
 } = require('../constants/twitter.const');
 
+const log = require('../../../services/log.service').get();
+
 const entity = (module.exports = {});
 
 /**
  * Send a tweet, no validations are performed.
  *
+ * @param {Object} configuration The configuration of this instance.
  * @param {string} status The message to tweet.
  * @return {Promise<Object>} A Promise with the created tweet.
  */
-entity.sendTweet = async (status) => {
-  const client = getClient();
+entity.sendTweet = async (configuration, status) => {
+  const client = getClient(configuration.space);
 
   return client.post('statuses/update', { status });
 };
@@ -30,20 +35,32 @@ entity.sendTweet = async (status) => {
  * Will prepare and format the message to be tweeted.
  *
  * @param {string} rawMessage The message to tweet.
- * @param {string} proposalTitle The proposal Title.
- * @param {string} proposalLink The proposal link.
- * @return {string} Formatted message to tweet.
+ * @param {Object} configuration The configuration of this instance.
+ * @param {Object} proposal The snapshot proposal object.
+ * @return {Promise<string|null>} Formatted message to tweet, or null if error.
  */
-entity.prepareMessage = (rawMessage, proposalTitle, proposalLink) => {
+entity.prepareMessage = async (rawMessage, configuration, proposal) => {
+  // Handle aggregate twitter account
+  if (configuration.space === config.app.aggregate_space_char) {
+    const daoTwitterHandle = Protocols[proposal.space.id];
+    if (!daoTwitterHandle) {
+      await log.error(
+        `Failed to find twitter handle for DAO: ${proposal.space.id}`,
+      );
+      return null;
+    }
+    rawMessage += `, at DAO @${daoTwitterHandle}`;
+  }
+
   let messageTemplateSize = URL_LENGTH + ELIPSES_LENGTH;
   messageTemplateSize += rawMessage.length;
   messageTemplateSize += 7; // 1 colon, 2 quotes and the 4 newlines
 
   const availableSize = MAX_CHARS - messageTemplateSize;
 
-  const proposalName = truncate(proposalTitle, availableSize);
+  const proposalName = truncate(proposal.title, availableSize);
 
-  const message = `${rawMessage}:\n\n"${proposalName}"\n\n${proposalLink}`;
+  const message = `${rawMessage}:\n\n"${proposalName}"\n\n${proposal.link}`;
 
   return message;
 };
