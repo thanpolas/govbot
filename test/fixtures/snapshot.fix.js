@@ -46,7 +46,7 @@ fix.proposalFix = () => {
   return {
     id: 'QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
     created: 1624387924,
-    space: { name: 'Uniswap', network: '1' },
+    space: { id: 'uniswap', name: 'Uniswap', network: '1' },
     type: 'single-choice',
     title: 'Temp Check: Larger Grant Construct // CEA + No Negative Net UNI',
     body:
