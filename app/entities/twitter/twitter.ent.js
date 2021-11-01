@@ -16,9 +16,10 @@ entity.prepareMessage = prepareMessage;
 /**
  * Initialize the twitter service and handlers.
  *
+ * @param {Object} configuration The configuration to initialize twitter with.
  * @return {Promise<void>} A Promise.
  */
-entity.init = async () => {
-  initService();
-  await initSnapshot();
+entity.init = async (configuration) => {
+  initService(configuration);
+  await initSnapshot(configuration);
 };
