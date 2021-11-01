@@ -31,6 +31,7 @@
         "access_token_secret": "DO NOT SET - USE ENV VAR: TWITTER_ACCESS_TOKEN_SECRET"
     },
     "app": {
+        "aggregate_space_char": "*",
         "space": "uniswap",
         "timezone": "Europe/Athens",
         "alert_before_ms": 3600000,
