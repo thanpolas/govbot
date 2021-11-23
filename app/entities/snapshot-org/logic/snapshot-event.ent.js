@@ -2,9 +2,12 @@
  * @fileoverview Handles webhook events from snapshot.org.
  */
 
+const config = require('config');
+
 const { events, eventTypes } = require('../../events');
 const { queryProposal } = require('../gql-queries/proposal.gql');
 const { graphQuery } = require('./query-subgraph.ent');
+const globals = require('../../../utils/globals');
 
 const log = require('../../../services/log.service').get();
 
@@ -37,9 +40,15 @@ entity.handleWebhook = async (data) => {
   //   event: 'proposal/created',
   //   space: 'yam.eth',
   //   expire: 1620947058
+  //   token: 'djasksjsjshshdhasd',
   // }
 
-  const { id: proposalId, event: eventType, space } = data;
+  const { id: proposalId, event: eventType, space, token } = data;
+
+  if (token !== config.app.snapshot_webhook_tokenn && !globals.isTest) {
+    await log.alert('Authentication failed on webhook', { custom: data });
+    return;
+  }
 
   await log.info(
     `Webhook event. Type: "${eventType}" Space: "${space}" id: ${proposalId}`,
