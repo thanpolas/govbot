@@ -3,7 +3,6 @@
  *    to discord.
  */
 
-const config = require('config');
 const { MessageEmbed } = require('discord.js');
 
 const { events, eventTypes } = require('../../events');
@@ -23,21 +22,27 @@ const entity = (module.exports = {});
 /**
  * Listen to events.
  *
+ * @param {Object} configuration runtime configuration.
  * @return {Promise<void>} A Promise.
  */
-entity.init = async () => {
-  await log.info('Initializing snapshot event handler...');
+entity.init = async (configuration) => {
+  if (!configuration.has_discord) {
+    return;
+  }
+  await log.info(
+    `Initializing snapshot event handler for discord for space: ${configuration.space}...`,
+  );
   if (!isConnected()) {
     await log.warn('Discord service not started, discord relay will not init.');
     return;
   }
   events.on(
     SNAPSHOT_PROPOSAL_START,
-    entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_START),
+    entity._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_START),
   );
   events.on(
     SNAPSHOT_PROPOSAL_END,
-    entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_END),
+    entity._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_END),
   );
 };
 
@@ -97,12 +102,13 @@ entity.createEmbedMessage = async (eventType, proposal) => {
 /**
  * Handles snapshot events, needs to handle own errors.
  *
+ * @param {Object} configuration runtime configuration.
  * @param {string} eventType The event type to handle.
  * @param {Object} proposal The snapshot proposal object.
  * @return {Promise<void>} A Promise.
  * @private
  */
-entity._handleEvent = async (eventType, proposal) => {
+entity._handleEvent = async (configuration, eventType, proposal) => {
   try {
     const embedMessage = await entity.createEmbedMessage(eventType, proposal);
     await entity.sendEmbedMessage(embedMessage);

@@ -2,7 +2,6 @@
  * @fileoverview Will check if alert[s] are due and dispatch them.
  */
 
-const config = require('config');
 const BPromise = require('bluebird');
 
 const { getAlerts, update } = require('../sql/vote-ends-alert.sql');

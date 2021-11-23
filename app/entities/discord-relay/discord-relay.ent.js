@@ -16,8 +16,9 @@ entity.sendEmbedMessage = sendEmbedMessage;
 /**
  * Initialize the discord service and handlers.
  *
+ * @param {Object} configuration runtime configuration.
  * @return {Promise<void>} A Promise.
  */
-entity.init = async () => {
-  await initSnapshot();
+entity.init = async (configuration) => {
+  await initSnapshot(configuration);
 };
