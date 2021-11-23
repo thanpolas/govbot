@@ -20,7 +20,7 @@ const {
 // Initialize logger early.
 logger.init({
   appName: `${packagejson.name}-test`,
-  suppressLogging: false,
+  suppressLogging: true,
 });
 
 const log = logger.get();
