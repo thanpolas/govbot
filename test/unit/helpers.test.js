@@ -47,7 +47,8 @@ describe('UNIT Helpers', () => {
       const res = helpers.arrToNumbers(arr);
 
       const expectedAr = [11, 13, 26, 34.5, 47.03, 2, 3, 17];
-      expect(res).toContainAllValues(expectedAr);
+
+      expect(res).toEqual(expectedAr);
     });
   });
   describe('meanOfArr()', () => {
