@@ -24,7 +24,7 @@
         "eslint": "eslint app test",
         "db:reset:local": "node scripts/db-local.script.js",
         "knex:create_migration": "knex --knexfile ./migrations/knexfile.js --migrations-directory ./migrations/migrations/ migrate:make",
-        "jest": "TZ=utc jest --ci --coverage && codecov",
+        "jest": "TZ=utc jest --ci --coverage --runInBand && codecov",
         "knex:migrate": "knex --knexfile ./migrations/knexfile.js --migrations-directory ./migrations/migrations/ migrate:latest",
         "test": "npm run eslint && npm run jest"
     },
@@ -44,7 +44,7 @@
         ],
         "testEnvironment": "node",
         "setupFilesAfterEnv": [
-            "jest-extended"
+            "jest-extended/all"
         ],
         "globalSetup": "./test/lib/global-setup.test.js",
         "testTimeout": 10000
