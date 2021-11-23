@@ -66,6 +66,7 @@ sql.create = async (input, tx) => {
  * @return {Promise<Array<string>|void>} The id or nothing if
  *    record not found.
  */
+// eslint-disable-next-line default-param-last
 sql.update = async (id, input = {}, tx) => {
   input.updated_at = db().fn.now();
 

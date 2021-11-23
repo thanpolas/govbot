@@ -49,7 +49,7 @@ testLib.discordOn = jest.fn();
 discordService._client = {
   on: testLib.discordOn,
   user: {
-    id: faker.datatype.number(999999999999999999),
+    id: faker.datatype.number('999999999999999999'),
   },
   destroy: () => {},
 };
