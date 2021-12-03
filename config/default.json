@@ -34,6 +34,7 @@
         "aggregate_space_char": "*",
         "space": "uniswap",
         "timezone": "Europe/Athens",
+        "snapshot_webhook_token": "DO NOT SET - USE ENV VAR: SNAPSHOT_WEBHOOK_TOKEN",
         "alert_before_ms": 3600000,
         "has_discord": true,
         "has_twitter": true,
