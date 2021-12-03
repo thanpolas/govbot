@@ -10,13 +10,16 @@ const { init: initTwitter } = require('../twitter');
 const { init: initDiscordRelay } = require('../discord-relay');
 const { init: initVoteAlert } = require('../vote-alert');
 const { getAll } = require('./sql/govbot-controller.sql');
+const discordService = require('../../services/discord.service');
 
 /**
  * Prepare and initialize all govbot services based on the defined configurations.
  *
+ * @param {Object} bootOpts Application boot options.
+ * @param {boolean} bootOpts.testing When true go into testing mode.
  * @return {Promise<void>}
  */
-exports.init = async () => {
+exports.init = async (bootOpts) => {
   const allConfigurations = await exports.getConfigurations();
 
   const promises = allConfigurations.map((configuration) => {
@@ -24,6 +27,7 @@ exports.init = async () => {
       initTwitter(configuration),
       initDiscordRelay(configuration),
       initVoteAlert(configuration),
+      discordService.init(bootOpts, configuration),
     ];
   });
 

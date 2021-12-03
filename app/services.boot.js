@@ -38,8 +38,6 @@ appServices.boot = async (bootOpts) => {
 
   await postgresService.init();
 
-  await discordService.init(bootOpts);
-
   // Launch task manager (cron) only on production.
   if (globals.isProd) {
     await cronService.init();

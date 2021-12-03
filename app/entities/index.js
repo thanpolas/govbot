@@ -3,9 +3,7 @@
  */
 
 const { init: initAdminRelay } = require('./admin-logs');
-const { init: initTwitter } = require('./twitter');
-const { init: initDiscordRelay } = require('./discord-relay');
-const { init: initVoteAlert } = require('./vote-alert');
+const { init: initGovbot } = require('./govbot-ctrl');
 
 const bootstrap = (module.exports = {});
 
@@ -17,9 +15,7 @@ const bootstrap = (module.exports = {});
  * @return {Promise} a promise.
  */
 bootstrap.init = async (bootOpts) => {
-  await initTwitter();
-  await initDiscordRelay();
-  await initVoteAlert();
+  await initGovbot(bootOpts);
 
   if (bootOpts.testing) {
     return;
