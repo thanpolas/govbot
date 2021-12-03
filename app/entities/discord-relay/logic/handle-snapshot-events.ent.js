@@ -3,6 +3,7 @@
  *    to discord.
  */
 
+const config = require('config');
 const { MessageEmbed } = require('discord.js');
 
 const { events, eventTypes } = require('../../events');
@@ -50,13 +51,16 @@ entity.init = async (configuration) => {
  * Sends an embed message to the appropriate channel.
  *
  * @param {Object} embedMessage Discord embed message.
+ * @param {Object} configuration runtime configuration.
  * @return {Promise<void>}
  */
-entity.sendEmbedMessage = async (embedMessage) => {
+entity.sendEmbedMessage = async (embedMessage, configuration) => {
   if (!isConnected()) {
     return;
   }
-  const discordChannel = await getGuildChannel(config.discord.gov_channel_id);
+
+  const { space, discord_gov_channel_id } = configuration;
+  const discordChannel = await getGuildChannel(space, discord_gov_channel_id);
 
   await discordChannel.send({ embeds: [embedMessage] });
 };
@@ -110,8 +114,19 @@ entity.createEmbedMessage = async (eventType, proposal) => {
  */
 entity._handleEvent = async (configuration, eventType, proposal) => {
   try {
+    // Check if proposal is for the current configuration.
+    if (proposal.space !== configuration.space) {
+      return;
+    }
+
+    // Check if discord integration exists for this configuration
+    if (!configuration.has_discord) {
+      return;
+    }
+
     const embedMessage = await entity.createEmbedMessage(eventType, proposal);
-    await entity.sendEmbedMessage(embedMessage);
+
+    await entity.sendEmbedMessage(embedMessage, configuration);
 
     await log.info(`Discord message sent for event ${eventType}`);
   } catch (ex) {
