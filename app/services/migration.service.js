@@ -1,7 +1,7 @@
 /**
  * @fileoverview Library responsible for migration operations, gets used only
  *   on special occasions like:
- *   * Heroku deployment.
+ *   - Heroku deployment.
  */
 
 const Knex = require('knex');

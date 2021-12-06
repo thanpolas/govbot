@@ -62,18 +62,18 @@ sql.create = async (input, tx) => {
  * Update a record.
  *
  * @param {Array<string>} id The record ID.
- * @param {Object} input The data to be updated
+ * @param {Object} updateData The data to be updated
  * @param {Object=} tx Transaction.
  * @return {Promise<Array<string>|void>} The id or nothing if
  *    record not found.
  */
-sql.update = async (id, input = {}, tx) => {
-  input.updated_at = db().fn.now();
+sql.update = async (id, updateData, tx) => {
+  updateData.updated_at = db().fn.now();
 
   const statement = db()
     .table(TABLE)
     .where('id', id)
-    .update(input)
+    .update(updateData)
     .returning('id');
 
   if (tx) {
