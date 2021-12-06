@@ -9,7 +9,11 @@ const testLib = require('../lib/test.lib');
 const { checkForAlerts } = require('../../app/entities/vote-alert');
 
 const { webhookStartFix } = require('../fixtures/snapshot.fix');
-const { deleteAll, getAll, insert } = require('../setup/vote-alert.setup');
+const {
+  deleteAll,
+  getByProposalId,
+  insert,
+} = require('../setup/vote-alert.setup');
 const { voteAlertReadyToGo } = require('../fixtures/vote-alert.fix');
 const { dispatchesMock } = require('../mocks/dispatches.mock');
 const { fetchProposalMock } = require('../mocks/gql-query-snapshot.mock');
@@ -33,7 +37,7 @@ describe('Voting Alert', () => {
 
       expect(res.status).toBe(200);
 
-      const alertRecords = await getAll();
+      const alertRecords = await getByProposalId(proposalId);
       expect(alertRecords).toHaveLength(1);
 
       const [alertRecord] = alertRecords;
