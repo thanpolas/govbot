@@ -5,7 +5,7 @@
 const config = require('config');
 const cron = require('node-cron');
 
-const { checkForAlert } = require('../entities/vote-alert');
+const { checkForAlerts } = require('../entities/vote-alert');
 const log = require('./log.service').get();
 
 const service = (module.exports = {});
@@ -20,6 +20,7 @@ service._checkForVoteExpires = null;
  */
 service.init = async () => {
   await log.info('Initializing CRON Service...');
+
   const cronOptions = {
     timezone: config.app.timezone,
   };
@@ -27,7 +28,7 @@ service.init = async () => {
   // Run every 3 minutes. Check expiring votes...
   service._taskFollowUpJoined1 = cron.schedule(
     '*/3 * * * *',
-    checkForAlert,
+    checkForAlerts,
     cronOptions,
   );
 };
