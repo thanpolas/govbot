@@ -2,6 +2,8 @@
  * @fileoverview Tests voting alert.
  */
 
+const { v4: uuidv4 } = require('uuid');
+
 const testLib = require('../lib/test.lib');
 
 const { checkForAlerts } = require('../../app/entities/vote-alert');
@@ -10,6 +12,7 @@ const { webhookStartFix } = require('../fixtures/snapshot.fix');
 const { deleteAll, getAll, insert } = require('../setup/vote-alert.setup');
 const { voteAlertReadyToGo } = require('../fixtures/vote-alert.fix');
 const { dispatchesMock } = require('../mocks/dispatches.mock');
+const { fetchProposalMock } = require('../mocks/gql-query-snapshot.mock');
 
 describe('Voting Alert', () => {
   testLib.init();
@@ -20,10 +23,13 @@ describe('Voting Alert', () => {
     });
 
     test('Will create alert on the start webhook', async () => {
+      const proposalId = uuidv4();
       dispatchesMock();
+      fetchProposalMock({ proposalId });
       const agent = testLib.getAgent();
-
-      const res = await agent.post('/snapshot-webhook').send(webhookStartFix());
+      const res = await agent
+        .post('/snapshot-webhook')
+        .send(webhookStartFix(proposalId));
 
       expect(res.status).toBe(200);
 
@@ -34,11 +40,13 @@ describe('Voting Alert', () => {
 
       expect(alertRecord.space).toEqual('uniswap');
       expect(alertRecord.link).toEqual(
-        'https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
+        `https://snapshot.org/#/uniswap/proposal/${proposalId}`,
       );
       expect(alertRecord.title).toEqual(
         'Temp Check: Larger Grant Construct // CEA + No Negative Net UNI',
       );
+      expect(alertRecord.proposal_id).toEqual(proposalId);
+
       expect(alertRecord.expires_at).toEqual(
         new Date('2021-06-25T18:45:00.000Z'),
       );

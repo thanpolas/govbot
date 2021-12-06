@@ -15,9 +15,9 @@ fix.webhookCreateFix = () => {
   };
 };
 
-fix.webhookStartFix = () => {
+fix.webhookStartFix = (proposalId) => {
   return {
-    id: `proposal/${fix.proposalId}`,
+    id: `proposal/${proposalId || fix.proposalId}`,
     event: 'proposal/start',
     space: 'uniswap',
     expire: 1620947058,
@@ -42,9 +42,10 @@ fix.webhookDeletedFix = () => {
   };
 };
 
-fix.proposalFix = () => {
+fix.proposalFix = (proposalId) => {
+  proposalId = proposalId || 'QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
   return {
-    id: 'QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
+    id: proposalId,
     created: 1624387924,
     space: { id: 'uniswap', name: 'Uniswap', network: '1' },
     type: 'single-choice',
@@ -60,6 +61,6 @@ fix.proposalFix = () => {
     start: 1624387500,
     end: 1624646700,
     state: 'closed',
-    link: 'https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
+    link: `https://snapshot.org/#/uniswap/proposal/${proposalId}`,
   };
 };
