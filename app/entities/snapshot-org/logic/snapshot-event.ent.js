@@ -44,7 +44,9 @@ exports.handleWebhook = async (data) => {
   const { id: proposalId, event: eventType, space, token } = data;
 
   if (token !== config.app.snapshot_webhook_token && !globals.isTest) {
-    await log.alert('Authentication failed on webhook', { custom: data });
+    await log.alert('Authentication failed on snapshot.org webhook', {
+      custom: data,
+    });
     return;
   }
 

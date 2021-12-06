@@ -21,7 +21,7 @@ ctrl.snapshotWebhookCtrl = async (req, res, next) => {
     await handleWebhook(req.body);
     res.json();
   } catch (ex) {
-    log.error('Secret-update error', {
+    log.error('Snapshot Webhook error', {
       viewer: req.viewer,
       error: ex,
     });
