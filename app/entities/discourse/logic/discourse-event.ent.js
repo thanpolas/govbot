@@ -4,6 +4,8 @@
 
 const crypto = require('crypto');
 
+const config = require('config');
+
 const { events, eventTypes } = require('../../events');
 
 const log = require('../../../services/log.service').get();
@@ -65,7 +67,7 @@ exports._authenticateCall = (payload, req) => {
   // secret: G6zUACgx*o!FcFG3AVTP.MQwCvxHH.aU22-CR9MArA
 
   const hash = crypto
-    .createHmac('sha256', 'G6zUACgx*o!FcFG3AVTP.MQwCvxHH.aU22-CR9MArA')
+    .createHmac('sha256', config.app.discourse_webhook_token)
     .update(payloadJSON)
     .digest('hex');
 
