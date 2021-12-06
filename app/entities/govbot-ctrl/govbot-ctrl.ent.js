@@ -13,6 +13,12 @@ const { getAll } = require('./sql/govbot-controller.sql');
 const discordService = require('../../services/discord.service');
 
 /**
+ * @type {Object?} Runtime cache for all configurations.
+ * @private
+ */
+exports._allConfigurations = null;
+
+/**
  * Prepare and initialize all govbot services based on the defined configurations.
  *
  * @param {Object} bootOpts Application boot options.
@@ -20,7 +26,8 @@ const discordService = require('../../services/discord.service');
  * @return {Promise<void>}
  */
 exports.init = async (bootOpts) => {
-  const allConfigurations = await exports.getConfigurations();
+  const allConfigurations = (exports._allConfigurations =
+    await exports.getConfigurations());
 
   const promises = allConfigurations.map((configuration) => {
     return [
@@ -42,6 +49,10 @@ exports.init = async (bootOpts) => {
  * @return {Promise<Array<Object>>} A promise with the configurations.
  */
 exports.getConfigurations = async () => {
+  if (exports._allConfigurations) {
+    return exports._allConfigurations;
+  }
+
   const allCtrls = await getAll();
   if (allCtrls.length) {
     return allCtrls;
