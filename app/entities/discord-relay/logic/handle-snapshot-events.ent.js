@@ -116,7 +116,7 @@ entity.createEmbedMessage = async (eventType, proposal) => {
 entity._handleEvent = async (configuration, eventType, proposal) => {
   try {
     // Check if proposal is for the current configuration.
-    if (proposal.space !== configuration.space) {
+    if (proposal.space.id !== configuration.space) {
       return;
     }
 
