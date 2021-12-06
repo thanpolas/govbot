@@ -59,6 +59,16 @@ entity.init = async (configuration) => {
  */
 entity._handleEvent = async (eventType, configuration, proposal) => {
   try {
+    // Check if proposal is for the current configuration.
+    if (proposal.space.id !== configuration.space) {
+      return;
+    }
+
+    // Check if twitter integration exists for this configuration
+    if (!configuration.has_twitter) {
+      return;
+    }
+
     let message = '';
     switch (eventType) {
       case SNAPSHOT_PROPOSAL_START:
