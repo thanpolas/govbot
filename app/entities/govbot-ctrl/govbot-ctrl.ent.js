@@ -84,5 +84,9 @@ exports.getConfigurations = async () => {
     wants_discourse_integration: config.app.wants_discourse_alerts,
   };
 
+  if (configuration.has_discord === 'false') {
+    configuration.has_discord = false;
+  }
+
   return [configuration];
 };
