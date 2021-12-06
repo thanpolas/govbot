@@ -106,7 +106,7 @@ entity._dispatchAlert = async (alertRecord) => {
 entity._dispatchTweet = async (alertRecord) => {
   const { configuration } = alertRecord;
 
-  const tweetMessage = twitterEnt.prepareMessage(
+  const tweetMessage = await twitterEnt.prepareMessage(
     '⏰ Less than an hour left to vote on',
     configuration,
     alertRecord,
