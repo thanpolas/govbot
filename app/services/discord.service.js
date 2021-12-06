@@ -3,9 +3,16 @@
  *  discord API.
  */
 
+const invariant = require('invariant');
 const { Client, Intents } = require('discord.js');
 
 const log = require('./log.service').get();
+
+/**
+ * @type {boolean} Toggle for local testing.
+ * @private
+ */
+exports._testing = false;
 
 /**
  * @type {?Object<Discord>} Discord clients indexed by space name.
@@ -36,6 +43,15 @@ exports.getClient = (configuration) => {
  * @return {boolean}
  */
 exports.isConnected = (configuration) => {
+  invariant(
+    !!configuration,
+    'isConnected() requires configuration or space id argument.',
+  );
+
+  if (exports._testing) {
+    return true;
+  }
+
   const space = configuration?.space || configuration;
   return !!exports._clients[space];
 };
@@ -49,6 +65,7 @@ exports.isConnected = (configuration) => {
  */
 exports.init = async function (bootOpts, configuration) {
   if (bootOpts.testing) {
+    exports._testing = true;
     return;
   }
 
