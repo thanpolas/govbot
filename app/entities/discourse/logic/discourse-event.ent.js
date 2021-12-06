@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const config = require('config');
 
 const { events, eventTypes } = require('../../events');
+const globals = require('../../../utils/globals');
 
 const log = require('../../../services/log.service').get();
 
@@ -56,10 +57,15 @@ exports.handleWebhook = async (payload, req) => {
  * @private
  */
 exports._authenticateCall = (payload, req) => {
+  // Skip authentication on testing
+  if (globals.isTest) {
+    return true;
+  }
+
   const { headers } = req;
 
-  const sha256Signature = headers['x-discourse-event-signature'];
-  if (!sha256Signature) {
+  const sha256SignatureRaw = headers['x-discourse-event-signature'];
+  if (!sha256SignatureRaw) {
     return false;
   }
   const rawPayload = req.rawBody.toString();
@@ -69,8 +75,7 @@ exports._authenticateCall = (payload, req) => {
     .update(rawPayload)
     .digest('hex');
 
-  console.log('rawPayload:', rawPayload);
-
+  const [, sha256Signature] = sha256SignatureRaw.split('=');
   // eslint-disable-next-line security-node/detect-possible-timing-attacks
   if (hash !== sha256Signature) {
     return false;
