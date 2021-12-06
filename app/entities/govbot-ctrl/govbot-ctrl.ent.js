@@ -7,6 +7,7 @@ const _ = require('lodash');
 const config = require('config');
 
 const { init: initTwitter } = require('../twitter');
+const { init: initDiscordRelay } = require('../discord-relay');
 
 const {
   init: initVoteAlert,
@@ -43,6 +44,7 @@ exports.init = async (bootOpts) => {
 
     if (configuration.has_discord) {
       proms.push(discordService.init(bootOpts, configuration));
+      proms.push(initDiscordRelay(configuration));
     }
 
     return proms;
