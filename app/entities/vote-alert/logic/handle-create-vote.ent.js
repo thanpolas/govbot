@@ -5,7 +5,6 @@
 const config = require('config');
 
 const { events, eventTypes } = require('../../events');
-
 const { create } = require('../sql/vote-ends-alert.sql');
 
 const log = require('../../../services/log.service').get();
