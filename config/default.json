@@ -35,6 +35,7 @@
         "space": "uniswap",
         "timezone": "Europe/Athens",
         "snapshot_webhook_token": "DO NOT SET - USE ENV VAR: SNAPSHOT_WEBHOOK_TOKEN",
+        "discourse_webhook_token": "DO NOT SET - USE ENV VAR: DISCOURSE_WEBHOOK_TOKEN",
         "alert_before_ms": 3600000,
         "has_discord": true,
         "has_twitter": true,
