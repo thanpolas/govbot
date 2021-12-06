@@ -8,7 +8,7 @@ const { MessageEmbed } = require('discord.js');
 
 const { events, eventTypes } = require('../../events');
 const { getLink, getGuildChannel } = require('../../discord-helpers');
-const { isConnected } = require('../../../services/discord.service');
+const discordService = require('../../../services/discord.service');
 
 const log = require('../../../services/log.service').get();
 
@@ -33,7 +33,8 @@ entity.init = async (configuration) => {
   await log.info(
     `Initializing snapshot event handler for discord for space: ${configuration.space}...`,
   );
-  if (!isConnected()) {
+
+  if (!discordService.isConnected(configuration)) {
     await log.warn('Discord service not started, discord relay will not init.');
     return;
   }
@@ -55,7 +56,7 @@ entity.init = async (configuration) => {
  * @return {Promise<void>}
  */
 entity.sendEmbedMessage = async (embedMessage, configuration) => {
-  if (!isConnected()) {
+  if (!discordService.isConnected(configuration)) {
     return;
   }
 
