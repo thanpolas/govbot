@@ -4,7 +4,7 @@
 
 const testLib = require('../lib/test.lib');
 
-const { checkForAlert } = require('../../app/entities/vote-alert');
+const { checkForAlerts } = require('../../app/entities/vote-alert');
 
 const { webhookStartFix } = require('../fixtures/snapshot.fix');
 const { deleteAll, getAll, insert } = require('../setup/vote-alert.setup');
@@ -51,12 +51,15 @@ describe('Voting Alert', () => {
       const voteAlertData = voteAlertReadyToGo();
       await insert(voteAlertData);
 
-      await checkForAlert();
+      await checkForAlerts();
+
+      const expectedTweet =
+        '⏰ Less than an hour left to vote on:\n\n"Temp ' +
+        'Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\n' +
+        'https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
 
       expect(tweetMock).toHaveBeenCalledTimes(1);
-      expect(tweetMock).toHaveBeenCalledWith(
-        '⏰ Less than an hour left to vote on:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
-      );
+      expect(tweetMock).toHaveBeenCalledWith(expect.any(Object), expectedTweet);
       expect(discordMock).toHaveBeenCalledTimes(1);
     });
   });
