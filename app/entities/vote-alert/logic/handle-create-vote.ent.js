@@ -43,6 +43,7 @@ entity._handleCreateEvent = async (proposal) => {
       space: proposal.space.id,
       link: proposal.link,
       title: proposal.title,
+      proposal_id: proposal.id,
       expires_at,
       alert_at,
     };
