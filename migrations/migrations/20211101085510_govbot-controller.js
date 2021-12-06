@@ -41,7 +41,7 @@ exports.up = async function (knex) {
   const alertRecords = await knex.select('id', 'link').from('vote_ends_alert');
   const promises = alertRecords.map((alertRecord) => {
     // https://snapshot.org/#/balancer/proposal/0xadd41023d90e4e66bc1af834f7a3951b7c6171388d24f3779afed4ca9ad75a9e
-    const lastSlash = alertRecord.link.lastIndex('/');
+    const lastSlash = alertRecord.link.lastIndexOf('/');
     const proposal_id = alertRecord.substr(lastSlash + 1);
 
     return knex
