@@ -41,9 +41,10 @@ describe('Snapshot Webhooks', () => {
       expect(tweetMock).toHaveBeenCalledTimes(1);
       expect(discordMock).toHaveBeenCalledTimes(1);
 
-      const expectedMessage =
-        '📢 Proposal now ACTIVE on Snapshot:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
-      expect(tweetMock).toHaveBeenCalledWith(expectedMessage);
+      const expectedTweet =
+        '📢 Voting STARTED for proposal:\n\n"Temp Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\nhttps://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN';
+
+      expect(tweetMock).toHaveBeenCalledWith(expect.any(Object), expectedTweet);
     });
 
     test('Will handle an end webhook', async () => {
