@@ -36,7 +36,6 @@ exports.init = async (bootOpts) => {
 
   await initVoteAlert();
 
-  console.log('allConfigurations:', allConfigurations);
   const promises = allConfigurations.map((configuration) => {
     const proms = [];
     if (configuration.has_twitter) {
@@ -84,6 +83,10 @@ exports.getConfigurations = async () => {
     wants_vote_end_alerts: config.app.wants_vote_end_alerts,
     wants_discourse_integration: config.app.wants_discourse_alerts,
   };
+
+  if (configuration.has_discord === 'false') {
+    configuration.has_discord = false;
+  }
 
   return [configuration];
 };
