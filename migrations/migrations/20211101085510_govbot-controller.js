@@ -51,10 +51,10 @@ exports.up = async function (knex) {
   });
 
   await Promise.all(promises);
-  await knex.schema.alterTable('vote_ends_alert', function (table) {
-    table.string('proposal_id').notNullable().alter();
-    table.unique('proposal_id');
-  });
+  // await knex.schema.alterTable('vote_ends_alert', function (table) {
+  //   table.string('proposal_id').notNullable().alter();
+  //   table.unique('proposal_id');
+  // });
 };
 
 exports.down = async function () {
