@@ -93,6 +93,7 @@ entity._handleEvent = async (eventType, configuration, proposal) => {
     if (!message) {
       return;
     }
+
     const res = await tweet.sendTweet(configuration, message);
 
     await log.info(
