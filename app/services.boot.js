@@ -57,10 +57,14 @@ appServices.boot = async (bootOpts) => {
  * @return {Promise<void>}
  */
 appServices.dispose = async () => {
-  await disposeExpressService();
-  await discordService.dispose();
-  await postgresService.dispose();
-  if (globals.isProd) {
-    await cronService.dispose();
+  try {
+    await disposeExpressService();
+    await discordService.dispose();
+    await postgresService.dispose();
+    if (globals.isProd) {
+      await cronService.dispose();
+    }
+  } catch (ex) {
+    // just ignore
   }
 };
