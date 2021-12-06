@@ -20,6 +20,7 @@ sql.getSelect = () => {
   const statement = db()
     .select(
       `${TABLE}.id`,
+      `${TABLE}.proposal_id`,
       `${TABLE}.space`,
       `${TABLE}.title`,
       `${TABLE}.link`,
