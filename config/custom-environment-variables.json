@@ -13,6 +13,7 @@
         "access_token_secret": "TWITTER_ACCESS_TOKEN_SECRET"
     },
     "app": {
-        "snapshot_webhook_token": "SNAPSHOT_WEBHOOK_TOKEN"
+        "snapshot_webhook_token": "SNAPSHOT_WEBHOOK_TOKEN",
+        "has_discord": "HAS_DISCORD"
     }
 }
