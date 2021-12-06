@@ -42,10 +42,10 @@ entity.sendTweet = async (configuration, status) => {
 entity.prepareMessage = async (rawMessage, configuration, proposal) => {
   // Handle aggregate twitter account
   if (configuration.space === config.app.aggregate_space_char) {
-    const daoTwitterHandle = Protocols[proposal.space.id];
+    const daoTwitterHandle = Protocols[configuration.space];
     if (!daoTwitterHandle) {
       await log.error(
-        `Failed to find twitter handle for DAO: ${proposal.space.id}`,
+        `Failed to find twitter handle for DAO: ${configuration.space}`,
       );
       return null;
     }
