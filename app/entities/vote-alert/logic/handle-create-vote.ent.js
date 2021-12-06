@@ -50,7 +50,7 @@ entity._handleCreateEvent = async (proposal) => {
     await create(alertData);
 
     await log.info(
-      `Alert record created for ${proposal.space}, id: ${proposal.id}`,
+      `Alert record created for ${proposal.space.id}, id: ${proposal.id}`,
     );
   } catch (ex) {
     await log.error('_handleCreateEvent Error', {
