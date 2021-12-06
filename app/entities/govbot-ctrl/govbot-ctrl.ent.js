@@ -36,6 +36,7 @@ exports.init = async (bootOpts) => {
 
   await initVoteAlert();
 
+  console.log('allConfigurations:', allConfigurations);
   const promises = allConfigurations.map((configuration) => {
     const proms = [];
     if (configuration.has_twitter) {
