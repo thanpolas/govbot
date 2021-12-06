@@ -58,21 +58,23 @@ exports.handleWebhook = async (payload, req) => {
 exports._authenticateCall = (payload, req) => {
   const { headers } = req;
 
-  const sha256 = headers['x-discourse-event-signature'];
-  if (!sha256) {
+  const sha256Signature = headers['x-discourse-event-signature'];
+  if (!sha256Signature) {
     return false;
   }
-  const payloadJSON = req.rawBody.toString();
-
-  // secret: G6zUACgx*o!FcFG3AVTP.MQwCvxHH.aU22-CR9MArA
+  const rawPayload = req.rawBody.toString();
 
   const hash = crypto
     .createHmac('sha256', config.app.discourse_webhook_token)
-    .update(payloadJSON)
+    .update(rawPayload)
     .digest('hex');
 
-  console.log('hash:', hash);
-  console.log('sha256:', sha256);
+  console.log('rawPayload:', rawPayload);
+
+  // eslint-disable-next-line security-node/detect-possible-timing-attacks
+  if (hash !== sha256Signature) {
+    return false;
+  }
 
   return true;
 };
