@@ -222,5 +222,9 @@ app._checkRoot = () => {
 
 // ignition
 if (globals.isStandAlone) {
-  app.init();
+  app.init().catch((ex) => {
+    // eslint-disable-next-line no-console
+    console.error('App initialization failed.', ex);
+    process.exit(1);
+  });
 }
