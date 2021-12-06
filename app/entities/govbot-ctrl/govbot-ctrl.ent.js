@@ -8,7 +8,12 @@ const config = require('config');
 
 const { init: initTwitter } = require('../twitter');
 const { init: initDiscordRelay } = require('../discord-relay');
-const { init: initVoteAlert } = require('../vote-alert');
+
+const {
+  init: initVoteAlert,
+  // Require directly to avoid a circular dependency with the
+  // "logic/check-for-alert.ent.js" module.
+} = require('../vote-alert/logic/handle-create-vote.ent');
 const { getAll } = require('./sql/govbot-controller.sql');
 const discordService = require('../../services/discord.service');
 
@@ -29,11 +34,12 @@ exports.init = async (bootOpts) => {
   const allConfigurations = (exports._allConfigurations =
     await exports.getConfigurations());
 
+  await initVoteAlert();
+
   const promises = allConfigurations.map((configuration) => {
     return [
       initTwitter(configuration),
       initDiscordRelay(configuration),
-      initVoteAlert(configuration),
       discordService.init(bootOpts, configuration),
     ];
   });
