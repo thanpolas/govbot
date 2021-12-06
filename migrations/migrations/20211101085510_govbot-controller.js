@@ -42,7 +42,7 @@ exports.up = async function (knex) {
   const promises = alertRecords.map((alertRecord) => {
     // https://snapshot.org/#/balancer/proposal/0xadd41023d90e4e66bc1af834f7a3951b7c6171388d24f3779afed4ca9ad75a9e
     const lastSlash = alertRecord.link.lastIndexOf('/');
-    const proposal_id = alertRecord.substring(lastSlash + 1);
+    const proposal_id = alertRecord.link.substring(lastSlash + 1);
 
     return knex
       .table('vote_ends_alert')
