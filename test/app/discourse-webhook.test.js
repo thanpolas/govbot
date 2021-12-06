@@ -33,7 +33,7 @@ describe('Discourse Webhooks', () => {
 
       discourseTopic.instance = 'https://gov.uniswap.org';
       discourseTopic.link =
-        'https://gov.uniswap.org/t/test-ignore-will-delete-asap/15407';
+        'https://gov.uniswap.org/t/another-one-to-ignore-testing-only/15408';
 
       expect(eventEmitMock).toHaveBeenCalledWith(
         'discourseNewtopic',
