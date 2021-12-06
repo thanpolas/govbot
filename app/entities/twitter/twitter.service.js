@@ -2,47 +2,63 @@
  * @fileoverview Twitter service provider.
  */
 
-const config = require('config');
 const TwitterApi = require('twitter');
 
-const service = (module.exports = {});
-
-/** @type {Object?} Twitter client */
-service._twClient = null;
+/** @type {Object} Dictionary containing twitter client instances, key is space name */
+exports.twitterClients = {};
 
 /**
  * Initialize the twitter client.
  *
+ * @param {Object} configuration The configuration to initialize twitter with.
  */
-service.init = () => {
+exports.init = (configuration) => {
+  if (!configuration.has_twitter) {
+    return;
+  }
+  const twConfig = exports.getConfiguration(configuration);
   // Instanciate with desired auth type (here's Bearer v2 auth)
-  service._twClient = new TwitterApi({
-    consumer_key: config.twitter.consumer_key,
-    consumer_secret: config.twitter.consumer_secret,
-    access_token_key: config.twitter.access_token,
-    access_token_secret: config.twitter.access_token_secret,
-  });
+  const twClient = new TwitterApi(twConfig);
+
+  exports.twitterClients[configuration.space] = twClient;
 };
 
 /**
  * Get the twitter client.
  *
+ * @param {string} space The space to get the client for.
  * @return {Object} twitter client.
  * @throws {Error} if twitter client is not initialized.
  */
-service.getClient = () => {
-  if (!service._twClient) {
+exports.getClient = (space) => {
+  if (!exports.twitterClients[space]) {
     throw new Error('Twitter client not ready');
   }
 
-  return service._twClient;
+  return exports.twitterClients[space];
 };
 
 /**
- * Checks if the twitter service is ready.
+ * Checks if the twitter client is ready.
  *
+ * @param {string} space The space to get the client for.
  * @return {boolean} if the twitter client is ready.
  */
-service.isConnected = () => {
-  return !!service._twClient;
+exports.isConnected = (space) => {
+  return !!exports.twitterClients[space];
+};
+
+/**
+ * Will transform global configuration to twitter specific.
+ *
+ * @param {Object} configuration The configuration to initialize twitter with.
+ * @return {Object} Appropriate configuration for twitter client.
+ */
+exports.getConfiguration = (configuration) => {
+  return {
+    consumer_key: configuration.twitter_consumer_key,
+    consumer_secret: configuration.twitter_consumer_secret,
+    access_token_key: configuration.twitter_access_token_key,
+    access_token_secret: configuration.twitter_access_token_secret,
+  };
 };

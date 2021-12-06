@@ -26,15 +26,13 @@ const EventMap = {
   'proposal/deleted': SNAPSHOT_PROPOSAL_DELETED,
 };
 
-const entity = (module.exports = {});
-
 /**
  * Handles the webhook event, will dispatch an event.
  *
  * @param {Object} data The webhook payload.
  * @return {Promise<void>} A Promise.
  */
-entity.handleWebhook = async (data) => {
+exports.handleWebhook = async (data) => {
   // {
   //   id: 'proposal/QmZ21uS8tVucpaNq2LZCbZUmHhYYXunC1ZS2gPDNWwPWD9',
   //   event: 'proposal/created',
@@ -60,10 +58,10 @@ entity.handleWebhook = async (data) => {
   }
 
   // Fetch proposal
-  const proposal = await entity._fetchProposal(proposalId);
+  const proposal = await exports._fetchProposal(proposalId);
 
   // Augment proposal object with the "link" property.
-  proposal.link = entity._generateLink(proposal);
+  proposal.link = exports._generateLink(proposal);
 
   const localEventType = EventMap[eventType];
 
@@ -77,7 +75,7 @@ entity.handleWebhook = async (data) => {
  * @return {Object|void} Fetched proposal object.
  * @private
  */
-entity._fetchProposal = async (proposalUri) => {
+exports._fetchProposal = async (proposalUri) => {
   const [, proposalId] = proposalUri.split('/');
   const query = queryProposal(proposalId);
 
@@ -93,7 +91,7 @@ entity._fetchProposal = async (proposalUri) => {
  * @return {string} Link to the proposal.
  * @private
  */
-entity._generateLink = (proposal) => {
+exports._generateLink = (proposal) => {
   // https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN
   const spaceName = proposal.space.name.toLowerCase();
   return `https://snapshot.org/#/${spaceName}/proposal/${proposal.id}`;

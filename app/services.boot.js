@@ -30,15 +30,13 @@ const appServices = (module.exports = {});
  * @return {Promise} a promise.
  */
 appServices.boot = async (bootOpts) => {
-  log.notice('Booting Services...');
+  await log.notice('Booting Services...');
 
   await initExpressService(bootOpts);
 
   await migrationService.runHerokuMigration();
 
   await postgresService.init();
-
-  await discordService.init(bootOpts);
 
   // Launch task manager (cron) only on production.
   if (globals.isProd) {

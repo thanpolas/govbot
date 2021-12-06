@@ -41,6 +41,8 @@ let initialized = false;
 let exiting = false;
 let appServices;
 
+let log = null;
+
 /**
  * Master bootstrap module.
  *
@@ -53,45 +55,51 @@ let appServices;
  * @return {Promise} A Promise.
  */
 app.init = async (optOpts) => {
-  if (initialized) {
-    return;
-  }
-  initialized = true;
-
-  // Get user & default boot options.
-  const bootOpts = app._getBootOpts(optOpts);
-
-  // if run as root, downgrade to the owner of this file
-  app._checkRoot();
-
-  // Initialize logging service
-  logService.init(bootOpts);
-
-  const log = logService.get();
-
-  log.notice(
-    `Initializing. standAlone: ${globals.isStandAlone}` +
-      ` :: System NODE_ENV: ${process.env.NODE_ENV} :: App Environment:` +
-      ` ${globals.env}`,
-    {
-      custom: {
-        stand_alone: globals.isStandAlone,
-        env_process: process.env.NODE_ENV,
-        env_application: globals.env,
-      },
-    },
-  );
-
-  app._setupErrorHandlers(log);
-
-  appServices = require('./services.boot');
-
   try {
+    if (initialized) {
+      return;
+    }
+    initialized = true;
+
+    // Get user & default boot options.
+    const bootOpts = app._getBootOpts(optOpts);
+
+    // if run as root, downgrade to the owner of this file
+    app._checkRoot();
+
+    // Initialize logging service
+    logService.init(bootOpts);
+
+    log = logService.get();
+
+    await log.notice(
+      `Initializing. standAlone: ${globals.isStandAlone}` +
+        ` :: System NODE_ENV: ${process.env.NODE_ENV} :: App Environment:` +
+        ` ${globals.env}`,
+      {
+        custom: {
+          stand_alone: globals.isStandAlone,
+          env_process: process.env.NODE_ENV,
+          env_application: globals.env,
+        },
+      },
+    );
+
+    app._setupErrorHandlers(log);
+
+    appServices = require('./services.boot');
     await appServices.boot(bootOpts);
   } catch (ex) {
-    await log.emergency('Error on boot:', { error: ex });
+    if (log) {
+      await log.emergency('Error on boot:', { error: ex });
+    } else {
+      // eslint-disable-next-line no-console
+      console.error('Error on boot', ex);
+    }
     if (!globals.isStandAlone) {
       throw ex;
+    } else {
+      process.exit(1);
     }
   }
 };
@@ -114,7 +122,7 @@ app.handleNodeExit = async (options, error) => {
 
   const { exit = true, exitCode = 0, type } = options;
 
-  const log = logService.get();
+  log = logService.get();
   log.notice('Received exit code', {
     custom: { type },
   });
@@ -140,10 +148,10 @@ app.dispose = async () => {
 /**
  * Setup global error handlers.
  *
- * @param {Object} log Logger.
+ * @param {Object} logger Logger.
  * @private
  */
-app._setupErrorHandlers = function (log) {
+app._setupErrorHandlers = function (logger) {
   process.on(
     'SIGINT',
     app.handleNodeExit.bind(null, {
@@ -164,7 +172,7 @@ app._setupErrorHandlers = function (log) {
     }),
   );
   process.on('unhandledRejection', async (error) => {
-    await log.critical('Unhandled Promise Rejection', { error });
+    await logger.critical('Unhandled Promise Rejection', { error });
   });
 };
 
@@ -202,7 +210,6 @@ app._getBootOpts = (optOpts) => {
  */
 app._checkRoot = () => {
   if (process.getuid() === 0) {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
     fs.stat(__filename, function (err, stats) {
       if (err) {
         // eslint-disable-next-line no-console

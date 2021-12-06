@@ -1,5 +1,5 @@
 /**
- * @fileoverview Alert on vote ending table.
+ * @fileoverview govbot controller SQL module.
  */
 
 const { db } = require('../../../services/postgres.service');
@@ -7,7 +7,7 @@ const { db } = require('../../../services/postgres.service');
 const sql = (module.exports = {});
 
 /** @const {string} TABLE Define the table to work on */
-const TABLE = 'vote_ends_alert';
+const TABLE = 'govbot_controller';
 
 /**
  * Return the SELECT statement to be performed for all queries.
@@ -20,17 +20,17 @@ sql.getSelect = () => {
   const statement = db()
     .select(
       `${TABLE}.id`,
-      `${TABLE}.proposal_id`,
       `${TABLE}.space`,
-      `${TABLE}.title`,
-      `${TABLE}.link`,
-
-      `${TABLE}.expires_at`,
-      `${TABLE}.alert_at`,
-
-      `${TABLE}.alert_twitter_dispatched`,
-      `${TABLE}.alert_discord_dispatched`,
-      `${TABLE}.alert_done`,
+      `${TABLE}.has_twitter`,
+      `${TABLE}.twitter_consumer_key`,
+      `${TABLE}.twitter_consumer_secret`,
+      `${TABLE}.twitter_access_token`,
+      `${TABLE}.twitter_access_token_secret`,
+      `${TABLE}.has_discord`,
+      `${TABLE}.discord_token`,
+      `${TABLE}.discord_gov_channel_id`,
+      `${TABLE}.wants_vote_end_alerts`,
+      `${TABLE}.wants_discourse_integration`,
 
       `${TABLE}.created_at`,
       `${TABLE}.updated_at`,
@@ -62,19 +62,18 @@ sql.create = async (input, tx) => {
  * Update a record.
  *
  * @param {Array<string>} id The record ID.
- * @param {Object} input The data to be updated
+ * @param {Object} updateData The data to be updated
  * @param {Object=} tx Transaction.
  * @return {Promise<Array<string>|void>} The id or nothing if
  *    record not found.
  */
-// eslint-disable-next-line default-param-last
-sql.update = async (id, input = {}, tx) => {
-  input.updated_at = db().fn.now();
+sql.update = async (id, updateData, tx) => {
+  updateData.updated_at = db().fn.now();
 
   const statement = db()
     .table(TABLE)
     .where('id', id)
-    .update(input)
+    .update(updateData)
     .returning('id');
 
   if (tx) {
@@ -86,19 +85,13 @@ sql.update = async (id, input = {}, tx) => {
 };
 
 /**
- * Get records to be alerted for.
+ * Get all records.
  *
  * @param {Object=} tx Transaction.
  * @return {Promise<Array<Object|void>>} A Promise with the record[s] if found.
  */
-sql.getAlerts = async (tx) => {
-  const alertTime = new Date();
-
-  const statement = sql
-    .getSelect()
-    .where('expires_at', '>', db().fn.now())
-    .andWhere('alert_at', '<', alertTime.toUTCString())
-    .andWhere('alert_done', false);
+sql.getAll = async (tx) => {
+  const statement = sql.getSelect();
 
   if (tx) {
     statement.transacting(tx);

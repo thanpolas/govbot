@@ -31,12 +31,14 @@
         "access_token_secret": "DO NOT SET - USE ENV VAR: TWITTER_ACCESS_TOKEN_SECRET"
     },
     "app": {
+        "aggregate_space_char": "*",
+        "space": "uniswap",
         "timezone": "Europe/Athens",
         "snapshot_webhook_token": "DO NOT SET - USE ENV VAR: SNAPSHOT_WEBHOOK_TOKEN",
         "alert_before_ms": 3600000,
-        "spaces_to_alert": [
-            "balancer.eth",
-            "uniswap"
-        ]
+        "has_discord": true,
+        "has_twitter": true,
+        "wants_vote_end_alerts": true,
+        "wants_discourse_alerts": true
     }
 }

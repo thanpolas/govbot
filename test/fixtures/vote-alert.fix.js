@@ -13,6 +13,7 @@ fix.voteAlertReadyToGo = () => {
   const dtFiveMinutesAgo = new Date(fiveMinutesAgo);
   return {
     space: 'uniswap',
+    proposal_id: 'QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
     title: 'Temp Check: Larger Grant Construct // CEA + No Negative Net UNI',
     link: 'https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN',
     expires_at: dtOneHour,

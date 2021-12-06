@@ -6,12 +6,12 @@ parserOptions:
 extends:
   - airbnb-base
   - plugin:jsdoc/recommended
-  - plugin:security/recommended
+  - plugin:security-node/recommended
   - plugin:prettier/recommended
 
 plugins:
   - jsdoc
-  - security
+  - security-node
 
 rules:
   arrow-body-style: 0

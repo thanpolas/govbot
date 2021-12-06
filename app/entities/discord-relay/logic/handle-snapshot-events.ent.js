@@ -8,7 +8,7 @@ const { MessageEmbed } = require('discord.js');
 
 const { events, eventTypes } = require('../../events');
 const { getLink, getGuildChannel } = require('../../discord-helpers');
-const { isConnected } = require('../../../services/discord.service');
+const discordService = require('../../../services/discord.service');
 
 const log = require('../../../services/log.service').get();
 
@@ -23,21 +23,28 @@ const entity = (module.exports = {});
 /**
  * Listen to events.
  *
+ * @param {Object} configuration runtime configuration.
  * @return {Promise<void>} A Promise.
  */
-entity.init = async () => {
-  await log.info('Initializing snapshot event handler...');
-  if (!isConnected()) {
+entity.init = async (configuration) => {
+  if (!configuration.has_discord) {
+    return;
+  }
+  await log.info(
+    `Initializing snapshot event handler for discord for space: ${configuration.space}...`,
+  );
+
+  if (!discordService.isConnected(configuration)) {
     await log.warn('Discord service not started, discord relay will not init.');
     return;
   }
   events.on(
     SNAPSHOT_PROPOSAL_START,
-    entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_START),
+    entity._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_START),
   );
   events.on(
     SNAPSHOT_PROPOSAL_END,
-    entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_END),
+    entity._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_END),
   );
 };
 
@@ -45,13 +52,16 @@ entity.init = async () => {
  * Sends an embed message to the appropriate channel.
  *
  * @param {Object} embedMessage Discord embed message.
+ * @param {Object} configuration runtime configuration.
  * @return {Promise<void>}
  */
-entity.sendEmbedMessage = async (embedMessage) => {
-  if (!isConnected()) {
+entity.sendEmbedMessage = async (embedMessage, configuration) => {
+  if (!discordService.isConnected(configuration)) {
     return;
   }
-  const discordChannel = await getGuildChannel(config.discord.gov_channel_id);
+
+  const { space, discord_gov_channel_id } = configuration;
+  const discordChannel = await getGuildChannel(space, discord_gov_channel_id);
 
   await discordChannel.send({ embeds: [embedMessage] });
 };
@@ -97,15 +107,27 @@ entity.createEmbedMessage = async (eventType, proposal) => {
 /**
  * Handles snapshot events, needs to handle own errors.
  *
+ * @param {Object} configuration runtime configuration.
  * @param {string} eventType The event type to handle.
  * @param {Object} proposal The snapshot proposal object.
  * @return {Promise<void>} A Promise.
  * @private
  */
-entity._handleEvent = async (eventType, proposal) => {
+entity._handleEvent = async (configuration, eventType, proposal) => {
   try {
+    // Check if proposal is for the current configuration.
+    if (proposal.space.id !== configuration.space) {
+      return;
+    }
+
+    // Check if discord integration exists for this configuration
+    if (!configuration.has_discord) {
+      return;
+    }
+
     const embedMessage = await entity.createEmbedMessage(eventType, proposal);
-    await entity.sendEmbedMessage(embedMessage);
+
+    await entity.sendEmbedMessage(embedMessage, configuration);
 
     await log.info(`Discord message sent for event ${eventType}`);
   } catch (ex) {

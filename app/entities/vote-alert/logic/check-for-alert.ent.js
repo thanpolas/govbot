@@ -2,13 +2,14 @@
  * @fileoverview Will check if alert[s] are due and dispatch them.
  */
 
-const config = require('config');
 const BPromise = require('bluebird');
 
 const { getAlerts, update } = require('../sql/vote-ends-alert.sql');
 const twitterEnt = require('../../twitter');
 const discordEnt = require('../../discord-relay');
 const { eventTypes } = require('../../events');
+const { getConfigurations } = require('../../govbot-ctrl');
+const { indexArrayToObject } = require('../../../utils/helpers');
 
 const log = require('../../../services/log.service').get();
 
@@ -21,26 +22,36 @@ const entity = (module.exports = {});
  *
  * @return {Promise<void>} A Promise.
  */
-entity.checkForAlert = async () => {
+entity.checkForAlerts = async () => {
   try {
+    const allConfigurations = await getConfigurations();
     const allPendingAlerts = await getAlerts();
-
     if (!allPendingAlerts.length) {
       return;
     }
 
-    const pendingAlerts = allPendingAlerts.filter((alert) => {
-      return config.app.spaces_to_alert.includes(alert.space);
-    });
+    const configurationsIndexed = indexArrayToObject(
+      allConfigurations,
+      'space',
+    );
 
+    // filter out any organizations that no longer require 1h alerts.
+    const pendingAlerts = allPendingAlerts.filter((alertItem) => {
+      return configurationsIndexed[alertItem.space].wants_vote_end_alerts;
+    });
     if (!pendingAlerts.length) {
       return;
     }
 
+    // Augmend alerts with their corresponding configuration.
+    pendingAlerts.forEach((alertItem) => {
+      alertItem.configuration = configurationsIndexed[alertItem.space];
+    });
+
     await BPromise.mapSeries(pendingAlerts, entity._dispatchAlert);
 
     await log.info(
-      `checkForAlert() dispatched ${pendingAlerts.length} vote expiration alert[s]`,
+      `checkForAlerts() dispatched ${pendingAlerts.length} vote expiration alert[s]`,
     );
   } catch (ex) {
     await log.error('checkForalert Error', {
@@ -93,13 +104,15 @@ entity._dispatchAlert = async (alertRecord) => {
  * @private
  */
 entity._dispatchTweet = async (alertRecord) => {
-  const tweetMessage = twitterEnt.prepareMessage(
+  const { configuration } = alertRecord;
+
+  const tweetMessage = await twitterEnt.prepareMessage(
     '⏰ Less than an hour left to vote on',
-    alertRecord.title,
-    alertRecord.link,
+    configuration,
+    alertRecord,
   );
 
-  await twitterEnt.sendTweet(tweetMessage);
+  await twitterEnt.sendTweet(configuration, tweetMessage);
 
   const updateData = {
     alert_twitter_dispatched: true,
@@ -116,11 +129,12 @@ entity._dispatchTweet = async (alertRecord) => {
  * @private
  */
 entity._dispatchDiscord = async (alertRecord) => {
+  const { configuration } = alertRecord;
   const embedMessage = await discordEnt.createEmbedMessage(
     PROPOSAL_ENDS_IN_ONE_HOUR,
     alertRecord,
   );
-  await discordEnt.sendEmbedMessage(embedMessage);
+  await discordEnt.sendEmbedMessage(embedMessage, configuration);
 
   const updateData = {
     alert_discord_dispatched: true,

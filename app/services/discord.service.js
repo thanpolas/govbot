@@ -3,62 +3,89 @@
  *  discord API.
  */
 
-const config = require('config');
+const invariant = require('invariant');
 const { Client, Intents } = require('discord.js');
 
 const log = require('./log.service').get();
 
-const discordService = (module.exports = {});
-
 /**
- * @type {?Discord} Discord client
+ * @type {boolean} Toggle for local testing.
  * @private
  */
-discordService._client = null;
+exports._testing = false;
+
+/**
+ * @type {?Object<Discord>} Discord clients indexed by space name.
+ * @private
+ */
+exports._clients = {};
 
 /**
  * Returns the Discord Command instance.
  *
+ * @param {Object|string} configuration runtime configuration or space name.
  * @return {Discord} Discord client.
  * @throws {Error} when discord is disconnected.
  */
-discordService.getClient = () => {
-  if (!discordService._client) {
-    throw new Error(
-      'Discord Service not initialized yet - client does not exist',
-    );
+exports.getClient = (configuration) => {
+  const space = configuration?.space || configuration;
+  if (!exports.isConnected(space)) {
+    throw new Error(`Discord Service not initialized yet for space: ${space}`);
   }
 
-  return discordService._client;
+  return exports._clients[space];
 };
 
 /**
  * Checks if service is connected to Discord.
  *
+ * @param {Object|string} configuration runtime configuration or space name.
  * @return {boolean}
  */
-discordService.isConnected = () => {
-  return !!discordService?._client;
+exports.isConnected = (configuration) => {
+  invariant(
+    !!configuration,
+    'isConnected() requires configuration or space id argument.',
+  );
+
+  if (exports._testing) {
+    return true;
+  }
+
+  const space = configuration?.space || configuration;
+  return !!exports._clients[space];
 };
 
 /**
  * Initialize and connect to the Discord API.
  *
  * @param {Object} bootOpts A set of app-boot options, docs in app index.
+ * @param {Object} configuration runtime configuration.
  * @return {Promise<void>} A Promise.
  */
-discordService.init = async function (bootOpts) {
+exports.init = async function (bootOpts, configuration) {
   if (bootOpts.testing) {
+    exports._testing = true;
     return;
   }
-  if (config.discord.token === 'DO NOT SET - USE ENV VAR: DISCORD_BOT_TOKEN') {
-    await log.warn('No discord bot token was detected, skipping discord init.');
+
+  const { space, has_discord, discord_token } = configuration;
+
+  if (!has_discord) {
     return;
   }
+  if (!discord_token) {
+    await log.warn(
+      `No discord bot token was detected for space: "${space}", ` +
+        `skipping discord init.`,
+    );
+    return;
+  }
+
   return new Promise((resolve, reject) => {
     log.notice('Starting Discord Service...');
 
-    const client = (discordService._client = new Client({
+    const client = (exports._clients[space] = new Client({
       intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
@@ -70,15 +97,20 @@ discordService.init = async function (bootOpts) {
     }));
 
     client.on('ready', () => {
-      log.notice(`Discord Connected as: ${client.user.tag}`);
+      log.notice(
+        `Discord Connected for space: ${space} as: ${client.user.tag}`,
+      );
 
       resolve();
     });
 
     client.on('error', async (error) => {
-      await log.warn(`Discord Client Error. Connected at: ${client.readyAt}`, {
-        error,
-      });
+      await log.warn(
+        `Discord Client Error for space: ${space}. Connected at: ${client.readyAt}`,
+        {
+          error,
+        },
+      );
 
       // When no connection has been established, the service is still in
       // initialization mode
@@ -87,7 +119,7 @@ discordService.init = async function (bootOpts) {
       }
     });
 
-    client.login(config.discord.token);
+    client.login(discord_token);
   });
 };
 
@@ -96,9 +128,18 @@ discordService.init = async function (bootOpts) {
  *
  * @return {Promise<void>}
  */
-discordService.dispose = async () => {
-  if (!discordService.isConnected()) {
+exports.dispose = async () => {
+  const spaces = Object.keys(exports._clients);
+  if (!spaces.length) {
     return;
   }
-  await discordService._client.destroy();
+
+  const promises = spaces.map(async (space) => {
+    if (!exports.isConnected(space)) {
+      return;
+    }
+    return exports._clients[space].destroy();
+  });
+
+  await Promise.all(promises);
 };

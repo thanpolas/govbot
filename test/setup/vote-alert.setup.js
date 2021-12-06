@@ -27,10 +27,14 @@ setup.deleteAll = async () => {
 /**
  * Get all the records.
  *
+ * @param {string} proposal_id the proposal id.
  * @return {Promise<Array<Object>>} A Promise with all the records.
  */
-setup.getAll = async () => {
-  const records = await db().select().from('vote_ends_alert');
+setup.getByProposalId = async (proposal_id) => {
+  const records = await db()
+    .select()
+    .from('vote_ends_alert')
+    .where({ proposal_id });
   return records;
 };
 

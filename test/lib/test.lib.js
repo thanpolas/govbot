@@ -54,14 +54,18 @@ discordService._client = {
   destroy: () => {},
 };
 
-/** @type {boolean}  Toggle to extend expect. */
-let expectExtended = false;
+/** @type {boolean}  Toggle if test lib has been initialized. */
+let testLibInited = false;
 
 /**
  * Core testing library, must be included by all tests.
  *
  */
 testLib.init = () => {
+  if (testLibInited) {
+    return;
+  }
+  testLibInited = true;
   beforeAll(async () => {
     await app.init({ testing: true });
   });
@@ -71,15 +75,12 @@ testLib.init = () => {
     await app.dispose();
   });
 
-  if (!expectExtended) {
-    expectExtended = true;
-    // Augment expect
-    expect.extend({
-      toBeISODate,
-      toBeUUID,
-      toBeEmail,
-    });
-  }
+  // Augment expect
+  expect.extend({
+    toBeISODate,
+    toBeUUID,
+    toBeEmail,
+  });
 };
 
 /**

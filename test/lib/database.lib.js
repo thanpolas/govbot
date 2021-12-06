@@ -28,6 +28,7 @@ testDb.recreateDatabase = async (targetDb = `${database_name}-dev`) => {
 
     const timeDiff = Date.now() - startTime;
 
+    /* eslint-disable security-node/detect-crlf */
     console.log(
       `\n\n💾 Database ${targetDb} nuked and created, migrations applied, seeds run. ` +
         `Total time: ${timeDiff}ms\n\n`,

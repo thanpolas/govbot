@@ -5,7 +5,6 @@
 const config = require('config');
 
 const { events, eventTypes } = require('../../events');
-
 const { create } = require('../sql/vote-ends-alert.sql');
 
 const log = require('../../../services/log.service').get();
@@ -44,6 +43,7 @@ entity._handleCreateEvent = async (proposal) => {
       space: proposal.space.id,
       link: proposal.link,
       title: proposal.title,
+      proposal_id: proposal.id,
       expires_at,
       alert_at,
     };
@@ -51,7 +51,7 @@ entity._handleCreateEvent = async (proposal) => {
     await create(alertData);
 
     await log.info(
-      `Alert record created for ${proposal.space}, id: ${proposal.id}`,
+      `Alert record created for ${proposal.space.id}, id: ${proposal.id}`,
     );
   } catch (ex) {
     await log.error('_handleCreateEvent Error', {

@@ -64,6 +64,7 @@ helpers.splitString = (str, numChars = 1800) => {
  * @return {number} A random integer number.
  */
 helpers.getRandomInt = (max) => {
+  // eslint-disable-next-line security-node/detect-insecure-randomness
   return Math.floor(Math.random() * Math.floor(max));
 };
 
@@ -116,7 +117,7 @@ helpers.stdQuote = (str) => {
   const stdQuote = '"'; // U+0022
 
   const normalized = allQuotes.reduce((strNorm, quoteChar) => {
-    // eslint-disable-next-line security/detect-non-literal-regexp
+    // eslint-disable-next-line security-node/non-literal-reg-expr
     const re = new RegExp(quoteChar, 'g');
     return strNorm.replace(re, stdQuote);
   }, str);
@@ -126,13 +127,14 @@ helpers.stdQuote = (str) => {
 
 /**
  * Will index an array of objects into an object using the designated
- * property of the objects as the index pivot.
+ * property of the objects as the index pivot. The created objects will be
+ * arrays of items to contain all records matching that index.
  *
  * @param {Array<Object>} arrayItems The array with objects to index.
  * @param {string} indexCol The column to index by.
- * @return {Object<Array<Object>>} Indexed array as an object.
+ * @return {Object<Array<Object<Array>>>} Indexed array as an object of Arrays.
  */
-helpers.indexArrayToObject = (arrayItems, indexCol) => {
+helpers.indexArrayToObjectAr = (arrayItems, indexCol) => {
   const indexed = {};
 
   arrayItems.forEach((arrayItem) => {
@@ -142,6 +144,25 @@ helpers.indexArrayToObject = (arrayItems, indexCol) => {
     } else {
       indexed[itemId] = [arrayItem];
     }
+  });
+  return indexed;
+};
+
+/**
+ * Will index an array of objects into an object using the designated
+ * property of the objects as the index pivot. The created objects will be
+ * objects, overwritting any duplicate indexed items.
+ *
+ * @param {Array<Object>} arrayItems The array with objects to index.
+ * @param {string} indexCol The column to index by.
+ * @return {Object<Array<Object>>} Indexed array as an object of Arrays.
+ */
+helpers.indexArrayToObject = (arrayItems, indexCol) => {
+  const indexed = {};
+
+  arrayItems.forEach((arrayItem) => {
+    const itemId = arrayItem[indexCol];
+    indexed[itemId] = arrayItem;
   });
   return indexed;
 };
