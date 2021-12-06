@@ -64,11 +64,6 @@ logger.init = function (bootOpts = {}) {
  * @private
  */
 logger._addMiddleware = () => {
-  const { loggerToAdmin } = require('../entities/admin-logs');
-
-  // Relay flagged messages to admin channel
-  logger.logality.use(loggerToAdmin);
-
   // Delete helper flags and properties
   logger.logality.use((logContext) => {
     delete logContext.emoji;

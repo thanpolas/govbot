@@ -2,7 +2,6 @@
  * @fileoverview Bootsrap for Entities.
  */
 
-const { init: initAdminRelay } = require('./admin-logs');
 const { init: initGovbot } = require('./govbot-ctrl');
 
 const bootstrap = (module.exports = {});
@@ -16,9 +15,4 @@ const bootstrap = (module.exports = {});
  */
 bootstrap.init = async (bootOpts) => {
   await initGovbot(bootOpts);
-
-  if (bootOpts.testing) {
-    return;
-  }
-  await initAdminRelay(bootOpts);
 };
