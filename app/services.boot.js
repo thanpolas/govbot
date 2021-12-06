@@ -30,7 +30,7 @@ const appServices = (module.exports = {});
  * @return {Promise} a promise.
  */
 appServices.boot = async (bootOpts) => {
-  log.notice('Booting Services...');
+  await log.notice('Booting Services...');
 
   await initExpressService(bootOpts);
 
