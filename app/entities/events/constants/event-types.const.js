@@ -13,4 +13,5 @@ consts.eventTypes = {
   SNAPSHOT_PROPOSAL_END: 'snapshotProposalEnd',
   SNAPSHOT_PROPOSAL_DELETED: 'snapshotProposalDeleted',
   PROPOSAL_ENDS_IN_ONE_HOUR: 'proposalEndsInOneHour',
+  DISCOURSE_NEW_TOPIC: 'discourseNewtopic',
 };
