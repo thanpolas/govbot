@@ -3,9 +3,9 @@
  */
 
 const { init } = require('./logic/handle-create-vote.ent');
-const { checkForAlert } = require('./logic/check-for-alert.ent');
+const { checkForAlerts } = require('./logic/check-for-alert.ent');
 
-exports.checkForAlert = checkForAlert;
+exports.checkForAlerts = checkForAlerts;
 
 /**
  * Initialize the twitter service and handlers.
