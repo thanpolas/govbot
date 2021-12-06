@@ -5,8 +5,8 @@
 const {
   init: initSnapshot,
   createEmbedMessage,
-  sendEmbedMessage,
 } = require('./logic/handle-snapshot-events.ent');
+const { sendEmbedMessage } = require('./logic/send-message.ent');
 
 const entity = (module.exports = {});
 
