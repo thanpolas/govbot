@@ -9,11 +9,12 @@ const entity = (module.exports = {});
 /**
  * Gets the Guild Object based on the id.
  *
+ * @param {string} space The snapshot.org space name.
  * @param {string} guildId the guild id.
  * @return {Promise<DiscordGuild>} Returns the guild instance.
  */
-entity.getGuild = async (guildId) => {
-  const guild = await getClient().guilds.cache.get(guildId);
+entity.getGuild = async (space, guildId) => {
+  const guild = await getClient(space).guilds.cache.get(guildId);
 
   return guild;
 };
@@ -21,11 +22,12 @@ entity.getGuild = async (guildId) => {
 /**
  * Fetches the Guild Channel instance based on the provided channel id.
  *
+ * @param {string} space The snapshot.org space name.
  * @param {string} channelId The channel id to be fetched.
  * @return {Promise<DiscordGuildChannel>}
  */
-entity.getGuildChannel = async (channelId) => {
-  const guildChannel = await getClient().channels.fetch(channelId);
+entity.getGuildChannel = async (space, channelId) => {
+  const guildChannel = await getClient(space).channels.fetch(channelId);
 
   return guildChannel;
 };
@@ -33,14 +35,15 @@ entity.getGuildChannel = async (channelId) => {
 /**
  * Gets the guildmember instance from a discord member id.
  *
+ * @param {string} space The snapshot.org space name.
  * @param {string} guildId the guild id.
  * @param {DiscordMemberId} discordMemberId Discord member id.
  * @return {Promise<DiscordGuildMember|null>} Returns the guildmember instance
  *    or null if member does not exist in the guild.
  */
-entity.getGuildMemberUid = async (guildId, discordMemberId) => {
+entity.getGuildMemberUid = async (space, guildId, discordMemberId) => {
   try {
-    const guild = await entity.getGuild(guildId);
+    const guild = await entity.getGuild(space, guildId);
 
     const guildMember = guild.members.fetch(discordMemberId);
 
