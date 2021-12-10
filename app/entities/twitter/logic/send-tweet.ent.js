@@ -27,6 +27,9 @@ const entity = (module.exports = {});
  */
 entity.sendTweet = async (configuration, status) => {
   const client = getClient(configuration.space);
+  console.log('SEND TWEET CLIENT:', client);
+  console.log('SEND TWEET config:', configuration);
+  console.log('SEND TWEET status:', status);
 
   return client.post('statuses/update', { status });
 };
