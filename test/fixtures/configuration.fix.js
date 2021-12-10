@@ -2,7 +2,7 @@
  * @fileoverview Configuration fixtures.
  */
 
-exports.configurationFix = (opts) => {
+exports.configurationFix = (opts = {}) => {
   return {
     space: opts.space || 'uniswap',
     has_twitter: opts.has_twitter || true,
