@@ -35,6 +35,27 @@ entity.checkForAlerts = async () => {
       'space',
     );
 
+    // This is for debugging purposes, catching any corruption of the db...
+    const notFoundSpaces = allPendingAlerts.map((alertItem) => {
+      if (!configurationsIndexed[alertItem.space]) {
+        return alertItem;
+      }
+      return null;
+    });
+
+    const issues = notFoundSpaces.filter((n) => !!n);
+
+    if (issues.length) {
+      issues.forEach(async (issue) => {
+        await log.warn(`Found missing space: ${issue.space}`, {
+          custom: {
+            allConfigurations,
+            alertItem: issue,
+          },
+        });
+      });
+    }
+
     // filter out any organizations that no longer require 1h alerts.
     const pendingAlerts = allPendingAlerts.filter((alertItem) => {
       return configurationsIndexed[alertItem.space]?.wants_vote_end_alerts;
