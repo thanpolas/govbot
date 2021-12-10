@@ -61,7 +61,7 @@ exports.getConfiguration = (configuration) => {
   return {
     consumer_key: configuration.twitter_consumer_key,
     consumer_secret: configuration.twitter_consumer_secret,
-    access_token_key: configuration.twitter_access_token_key,
+    access_token_key: configuration.twitter_access_token,
     access_token_secret: configuration.twitter_access_token_secret,
   };
 };
