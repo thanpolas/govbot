@@ -4,6 +4,8 @@
 
 const TwitterApi = require('twitter');
 
+const log = require('../../services/log.service').get();
+
 /** @type {Object} Dictionary containing twitter client instances, key is space name */
 exports.twitterClients = {};
 
@@ -12,7 +14,7 @@ exports.twitterClients = {};
  *
  * @param {Object} configuration The configuration to initialize twitter with.
  */
-exports.init = (configuration) => {
+exports.init = async (configuration) => {
   if (!configuration.has_twitter) {
     return;
   }
@@ -21,6 +23,7 @@ exports.init = (configuration) => {
   const twClient = new TwitterApi(twConfig);
 
   exports.twitterClients[configuration.space] = twClient;
+  await log.info(`Initialized twitter client for ${configuration.space}`);
 };
 
 /**
