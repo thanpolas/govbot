@@ -23,6 +23,9 @@ const { DISCOURSE_NEW_TOPIC } = eventTypes;
  */
 exports.handleWebhook = async (payload, req) => {
   const { headers } = req;
+
+  console.log('RECEIVED WEBHOOK. Payload:', payload);
+  console.log('RECEIVED WEBHOOK. Headers:', headers);
   // Filter out anything but new topics
   if (headers['x-discourse-event-type'] !== 'topic') {
     return;
@@ -44,6 +47,7 @@ exports.handleWebhook = async (payload, req) => {
   payload.link = exports._generateLink(payload);
 
   const configFound = await exports._findConfiguration(payload);
+  console.log('Config found:', configFound, payload);
   if (!configFound) {
     return;
   }

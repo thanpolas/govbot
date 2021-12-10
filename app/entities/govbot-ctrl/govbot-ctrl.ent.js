@@ -34,6 +34,7 @@ exports.init = async (bootOpts) => {
   const allConfigurations = (exports._allConfigurations =
     await exports.getConfigurations());
 
+  console.log('All configurations:', allConfigurations);
   await initVoteAlert();
 
   const promises = allConfigurations.map((configuration) => {
