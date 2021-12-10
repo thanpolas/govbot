@@ -54,7 +54,7 @@ entity._handleEvent = async (configuration, discourseTopic) => {
     const message = await tweet.prepareMessage(
       '📫 New topic posted',
       configuration,
-      discourseTopic.title,
+      discourseTopic.topic.title,
       discourseTopic.link,
     );
 

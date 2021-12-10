@@ -76,14 +76,13 @@ exports._handleEvent = async (configuration, discourseTopic) => {
 /**
  * Creates the appropriate embed message to send to the channel.
  *
- * @param {string} eventType The event type to handle.
  * @param {Object} discourseTopic The discourse topic object.
  * @return {Promise<DiscordMessageEmber>} The embed message.
  */
-exports.createEmbedMessage = async (eventType, discourseTopic) => {
+exports.createEmbedMessage = async (discourseTopic) => {
   const embedMessage = new MessageEmbed();
   const embedLink = getLink(
-    discourseTopic.title,
+    discourseTopic.topic.title,
     discourseTopic.link,
     'Go to topic',
   );
