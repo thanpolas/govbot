@@ -36,10 +36,11 @@ entity.sendTweet = async (configuration, status) => {
  *
  * @param {string} rawMessage The message to tweet.
  * @param {Object} configuration The configuration of this instance.
- * @param {Object} proposal The snapshot proposal object.
+ * @param {string} title The title that needs to be tweeted.
+ * @param {string} link The link that needs to be tweeted.
  * @return {Promise<string|null>} Formatted message to tweet, or null if error.
  */
-entity.prepareMessage = async (rawMessage, configuration, proposal) => {
+entity.prepareMessage = async (rawMessage, configuration, title, link) => {
   // Handle aggregate twitter account
   if (configuration.space === config.app.aggregate_space_char) {
     const daoTwitterHandle = Protocols[configuration.space];
@@ -58,9 +59,9 @@ entity.prepareMessage = async (rawMessage, configuration, proposal) => {
 
   const availableSize = MAX_CHARS - messageTemplateSize;
 
-  const proposalName = truncate(proposal.title, availableSize);
+  const proposalName = truncate(title, availableSize);
 
-  const message = `${rawMessage}:\n\n"${proposalName}"\n\n${proposal.link}`;
+  const message = `${rawMessage}:\n\n"${proposalName}"\n\n${link}`;
 
   return message;
 };
