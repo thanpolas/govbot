@@ -32,17 +32,17 @@ entity.init = async (configuration) => {
 };
 
 /**
- * Handles snapshot events, needs to handle own errors.
+ * Handles discourse events, needs to handle own errors.
  *
  * @param {Object} configuration The configuration of this instance.
- * @param {Object} discourseTopic The discourse topic data object.
+ * @param {Object} discourseTopic The discourse topic data object (webhook payload).
  * @return {Promise<void>} A Promise.
  * @private
  */
 entity._handleEvent = async (configuration, discourseTopic) => {
   try {
-    // Check if proposal is for the current configuration.
-    if (proposal.space.id !== configuration.space) {
+    // Check if event is for the current configuration.
+    if (discourseTopic.space !== configuration.space) {
       return;
     }
 
@@ -51,40 +51,25 @@ entity._handleEvent = async (configuration, discourseTopic) => {
       return;
     }
 
-    let message = '';
-    switch (eventType) {
-      case SNAPSHOT_PROPOSAL_START:
-        message = await tweet.prepareMessage(
-          '📢 Voting STARTED for proposal',
-          configuration,
-          proposal,
-        );
-        break;
-      case SNAPSHOT_PROPOSAL_END:
-        message = await tweet.prepareMessage(
-          '⛔ Voting ENDED for proposal',
-          configuration,
-          proposal,
-        );
-        break;
-      default:
-        await log.warn(`_handleEvent() Bogus event type: "${eventType}"`);
-        return;
-    }
-
-    if (!message) {
-      return;
-    }
+    const message = await tweet.prepareMessage(
+      '📫 New topic posted',
+      configuration,
+      discourseTopic.title,
+      discourseTopic.link,
+    );
 
     const res = await tweet.sendTweet(configuration, message);
 
     await log.info(
-      `Tweet sent for event ${eventType}, space: ${configuration.space}, twitter id ${res.id}`,
+      `Tweet sent for new discourse topic, space: ${configuration.space}, twitter id ${res.id}`,
     );
   } catch (ex) {
-    await log.error(`_handleEvent Error for space: ${configuration.space}`, {
-      error: ex,
-      custom: { proposal, error: ex },
-    });
+    await log.error(
+      `Discourse _handleEvent() Error for space: ${configuration.space}`,
+      {
+        error: ex,
+        custom: { discourseTopic, error: ex },
+      },
+    );
   }
 };
