@@ -37,7 +37,7 @@ entity.checkForAlerts = async () => {
 
     // filter out any organizations that no longer require 1h alerts.
     const pendingAlerts = allPendingAlerts.filter((alertItem) => {
-      return configurationsIndexed[alertItem.space].wants_vote_end_alerts;
+      return configurationsIndexed[alertItem.space]?.wants_vote_end_alerts;
     });
     if (!pendingAlerts.length) {
       return;
