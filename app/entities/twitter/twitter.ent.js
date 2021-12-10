@@ -21,7 +21,7 @@ entity.prepareMessage = prepareMessage;
  * @return {Promise<void>} A Promise.
  */
 entity.init = async (configuration) => {
-  initService(configuration);
+  await initService(configuration);
   await initSnapshot(configuration);
   await initDiscourse(configuration);
 };

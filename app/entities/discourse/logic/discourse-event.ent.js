@@ -23,6 +23,7 @@ const { DISCOURSE_NEW_TOPIC } = eventTypes;
  */
 exports.handleWebhook = async (payload, req) => {
   const { headers } = req;
+
   // Filter out anything but new topics
   if (headers['x-discourse-event-type'] !== 'topic') {
     return;
