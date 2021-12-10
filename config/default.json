@@ -36,6 +36,7 @@
         "timezone": "Europe/Athens",
         "snapshot_webhook_token": "DO NOT SET - USE ENV VAR: SNAPSHOT_WEBHOOK_TOKEN",
         "discourse_webhook_token": "DO NOT SET - USE ENV VAR: DISCOURSE_WEBHOOK_TOKEN",
+        "discourse_instance_name": "DO NOT SET - USE ENV VAR: DISCOURSE_INSTANCE_NAME",
         "alert_before_ms": 3600000,
         "has_discord": true,
         "has_twitter": true,
