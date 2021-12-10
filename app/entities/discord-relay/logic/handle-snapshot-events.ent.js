@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 const { getLink } = require('../../discord-helpers');
 const { events, eventTypes } = require('../../events');
 const discordService = require('../../../services/discord.service');
-const { sendEmbedMessage } = require('./send-message.ent');
+const sendMessageEnt = require('./send-message.ent');
 
 const log = require('../../../services/log.service').get();
 
@@ -70,7 +70,7 @@ exports._handleEvent = async (configuration, eventType, proposal) => {
 
     const embedMessage = await exports.createEmbedMessage(eventType, proposal);
 
-    await sendEmbedMessage(embedMessage, configuration);
+    await sendMessageEnt.sendEmbedMessage(embedMessage, configuration);
 
     await log.info(`Discord message sent for event ${eventType}`);
   } catch (ex) {
