@@ -8,6 +8,7 @@ const config = require('config');
 
 const { events, eventTypes } = require('../../events');
 const globals = require('../../../utils/globals');
+const { getConfigurations } = require('../../govbot-ctrl');
 
 const log = require('../../../services/log.service').get();
 
@@ -30,9 +31,10 @@ exports.handleWebhook = async (payload, req) => {
     return;
   }
 
-  if (!exports._authenticateCall(payload, req)) {
+  if (!exports._authenticateCall(req)) {
     await log.alert('Authentication failed on Discourse webhook', {
       custom: { payload, headers },
+      req,
     });
     return;
   }
@@ -40,6 +42,11 @@ exports.handleWebhook = async (payload, req) => {
   // Augment the payload with the discourse instance and link to topic
   payload.instance = headers['x-discourse-instance'];
   payload.link = exports._generateLink(payload);
+
+  const configFound = await exports._findConfiguration(payload);
+  if (!configFound) {
+    return;
+  }
 
   await log.info(
     `Discourse Webhook. Instance: ${payload.instance} id: "${payload.id}"`,
@@ -51,12 +58,11 @@ exports.handleWebhook = async (payload, req) => {
 /**
  * Authenticates the request.
  *
- * @param {Object} payload The webhook payload.
  * @param {Object} req Express request object.
  * @return {boolean} If the call is authenticated to be from discourse.
  * @private
  */
-exports._authenticateCall = (payload, req) => {
+exports._authenticateCall = (req) => {
   // Skip authentication on testing
   if (globals.isTest) {
     return true;
@@ -95,4 +101,30 @@ exports._generateLink = (payload) => {
   // https://gov.uniswap.org/t/consensus-check-deploy-uniswap-v3-to-polygon-pos-chain/15262
 
   return `${payload.instance}/t/${payload.topic.slug}/${payload.topic.id}`;
+};
+
+/**
+ * Will search for and add the configuration space id to the payload.
+ *
+ * If no configuration is found, false is returned.
+ *
+ * @param {Object} payload The webhook payload.
+ * @return {Promise<boolean>} A Promise with true of a configuration was found.
+ * @private
+ */
+exports._findConfiguration = async (payload) => {
+  const allConfigurations = await getConfigurations();
+
+  const { instance } = payload;
+  let configFound = false;
+  allConfigurations.forEach((configuration) => {
+    if (!configuration.wants_discourse_integration) {
+      return;
+    }
+    if (configuration.discourse_instance_name === instance) {
+      configFound = true;
+      payload.space = configuration.space;
+    }
+  });
+  return configFound;
 };
