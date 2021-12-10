@@ -5,7 +5,7 @@
 const twitterEnt = require('../../app/entities/twitter');
 const twitterSend = require('../../app/entities/twitter/logic/send-tweet.ent');
 const discordEnt = require('../../app/entities/discord-relay');
-const discordSend = require('../../app/entities/discord-relay/logic/handle-snapshot-events.ent');
+const discordSend = require('../../app/entities/discord-relay/logic/send-message.ent');
 
 const { tweetResponseFix } = require('../fixtures/twitter.fix');
 

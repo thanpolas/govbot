@@ -75,14 +75,16 @@ entity._handleEvent = async (eventType, configuration, proposal) => {
         message = await tweet.prepareMessage(
           '📢 Voting STARTED for proposal',
           configuration,
-          proposal,
+          proposal.title,
+          proposal.link,
         );
         break;
       case SNAPSHOT_PROPOSAL_END:
         message = await tweet.prepareMessage(
           '⛔ Voting ENDED for proposal',
           configuration,
-          proposal,
+          proposal.title,
+          proposal.link,
         );
         break;
       default:

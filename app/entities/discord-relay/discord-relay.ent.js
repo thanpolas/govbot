@@ -5,8 +5,10 @@
 const {
   init: initSnapshot,
   createEmbedMessage,
-  sendEmbedMessage,
 } = require('./logic/handle-snapshot-events.ent');
+const { init: initDiscourse } = require('./logic/handle-discourse-events.ent');
+
+const { sendEmbedMessage } = require('./logic/send-message.ent');
 
 const entity = (module.exports = {});
 
@@ -21,4 +23,5 @@ entity.sendEmbedMessage = sendEmbedMessage;
  */
 entity.init = async (configuration) => {
   await initSnapshot(configuration);
+  await initDiscourse(configuration);
 };

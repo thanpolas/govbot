@@ -14,6 +14,9 @@
     },
     "app": {
         "snapshot_webhook_token": "SNAPSHOT_WEBHOOK_TOKEN",
+        "discourse_webhook_token": "DISCOURSE_WEBHOOK_TOKEN",
+        "discourse_instance_name": "DISCOURSE_INSTANCE_NAME",
+        "wants_discourse_alerts": "WANTS_DISCOURSE",
         "has_discord": "HAS_DISCORD"
     }
 }

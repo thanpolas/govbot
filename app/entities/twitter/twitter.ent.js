@@ -5,6 +5,7 @@
 
 const { init: initService, isConnected } = require('./twitter.service');
 const { init: initSnapshot } = require('./logic/handle-snapshot-events.ent');
+const { init: initDiscourse } = require('./logic/handle-discourse-events.ent');
 const { sendTweet, prepareMessage } = require('./logic/send-tweet.ent');
 
 const entity = (module.exports = {});
@@ -22,4 +23,5 @@ entity.prepareMessage = prepareMessage;
 entity.init = async (configuration) => {
   initService(configuration);
   await initSnapshot(configuration);
+  await initDiscourse(configuration);
 };

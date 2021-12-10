@@ -82,6 +82,7 @@ exports.getConfigurations = async () => {
     discord_gov_channel_id: config.discord.gov_channel_id,
     wants_vote_end_alerts: config.app.wants_vote_end_alerts,
     wants_discourse_integration: config.app.wants_discourse_alerts,
+    discourse_instance_name: config.app.discourse_instance_name,
   };
 
   if (configuration.has_discord === 'false') {

@@ -1,27 +1,27 @@
 /**
- * @fileoverview Webhook endpoint for snapshot.org.
+ * @fileoverview Webhook endpoint for Discourse.
  */
 
-const { handleWebhook } = require('../logic/snapshot-event.ent');
+const { handleWebhook } = require('../logic/discourse-event.ent');
 
 const log = require('../../../services/log.service').get();
 
 const ctrl = (module.exports = {});
 
 /**
- * Webhook endpoint for snapshot.org.
+ * Webhook endpoint for Discourse.
  *
  * @param {Request} req Express request.
  * @param {Response} res Express response.
  * @param {function} next Error handler.
  * @return {Promise} A Promise.
  */
-ctrl.snapshotWebhookCtrl = async (req, res, next) => {
+ctrl.discourseWebhookCtrl = async (req, res, next) => {
   try {
-    await handleWebhook(req.body);
+    await handleWebhook(req.body, req);
     res.json();
   } catch (ex) {
-    log.error('Snapshot Webhook error', {
+    log.error('Discourse Webhook error', {
       viewer: req.viewer,
       error: ex,
     });

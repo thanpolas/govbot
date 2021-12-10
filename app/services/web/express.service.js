@@ -58,7 +58,13 @@ expressService.init = async function (bootOpts) {
   // Sets "X-Content-Type-Options: nosniff".
   app.use(noSniff());
 
-  app.use(bodyParser.json());
+  app.use(
+    bodyParser.json({
+      verify: (req, res, buf) => {
+        req.rawBody = buf;
+      },
+    }),
+  );
 
   // Enable HTTP -> HTTPS redirects
   if (config.webserver.enforce_ssl) {

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests in API are Integrations tests.
+ * @fileoverview snapshot.org webhook tests.
  */
 
 const { v4: uuidv4 } = require('uuid');

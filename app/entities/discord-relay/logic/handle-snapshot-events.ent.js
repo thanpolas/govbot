@@ -6,9 +6,10 @@
 const config = require('config');
 const { MessageEmbed } = require('discord.js');
 
+const { getLink } = require('../../discord-helpers');
 const { events, eventTypes } = require('../../events');
-const { getLink, getGuildChannel } = require('../../discord-helpers');
 const discordService = require('../../../services/discord.service');
+const sendMessageEnt = require('./send-message.ent');
 
 const log = require('../../../services/log.service').get();
 
@@ -18,15 +19,13 @@ const {
   PROPOSAL_ENDS_IN_ONE_HOUR,
 } = eventTypes;
 
-const entity = (module.exports = {});
-
 /**
  * Listen to events.
  *
  * @param {Object} configuration runtime configuration.
  * @return {Promise<void>} A Promise.
  */
-entity.init = async (configuration) => {
+exports.init = async (configuration) => {
   if (!configuration.has_discord) {
     return;
   }
@@ -40,30 +39,46 @@ entity.init = async (configuration) => {
   }
   events.on(
     SNAPSHOT_PROPOSAL_START,
-    entity._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_START),
+    exports._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_START),
   );
   events.on(
     SNAPSHOT_PROPOSAL_END,
-    entity._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_END),
+    exports._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_END),
   );
 };
 
 /**
- * Sends an embed message to the appropriate channel.
+ * Handles snapshot events, needs to handle own errors.
  *
- * @param {Object} embedMessage Discord embed message.
  * @param {Object} configuration runtime configuration.
- * @return {Promise<void>}
+ * @param {string} eventType The event type to handle.
+ * @param {Object} proposal The snapshot proposal object.
+ * @return {Promise<void>} A Promise.
+ * @private
  */
-entity.sendEmbedMessage = async (embedMessage, configuration) => {
-  if (!discordService.isConnected(configuration)) {
-    return;
+exports._handleEvent = async (configuration, eventType, proposal) => {
+  try {
+    // Check if proposal is for the current configuration.
+    if (proposal.space.id !== configuration.space) {
+      return;
+    }
+
+    // Check if discord integration exists for this configuration
+    if (!configuration.has_discord) {
+      return;
+    }
+
+    const embedMessage = await exports.createEmbedMessage(eventType, proposal);
+
+    await sendMessageEnt.sendEmbedMessage(embedMessage, configuration);
+
+    await log.info(`Discord message sent for event ${eventType}`);
+  } catch (ex) {
+    await log.error('_handleEvent Error', {
+      error: ex,
+      custom: { proposal, error: ex },
+    });
   }
-
-  const { space, discord_gov_channel_id } = configuration;
-  const discordChannel = await getGuildChannel(space, discord_gov_channel_id);
-
-  await discordChannel.send({ embeds: [embedMessage] });
 };
 
 /**
@@ -73,7 +88,7 @@ entity.sendEmbedMessage = async (embedMessage, configuration) => {
  * @param {Object} proposal The snapshot proposal object.
  * @return {Promise<DiscordMessageEmber>} The embed message.
  */
-entity.createEmbedMessage = async (eventType, proposal) => {
+exports.createEmbedMessage = async (eventType, proposal) => {
   const embedMessage = new MessageEmbed();
   const embedLink = getLink(proposal.title, proposal.link, 'Go to proposal');
 
@@ -102,38 +117,4 @@ entity.createEmbedMessage = async (eventType, proposal) => {
   }
 
   return embedMessage;
-};
-
-/**
- * Handles snapshot events, needs to handle own errors.
- *
- * @param {Object} configuration runtime configuration.
- * @param {string} eventType The event type to handle.
- * @param {Object} proposal The snapshot proposal object.
- * @return {Promise<void>} A Promise.
- * @private
- */
-entity._handleEvent = async (configuration, eventType, proposal) => {
-  try {
-    // Check if proposal is for the current configuration.
-    if (proposal.space.id !== configuration.space) {
-      return;
-    }
-
-    // Check if discord integration exists for this configuration
-    if (!configuration.has_discord) {
-      return;
-    }
-
-    const embedMessage = await entity.createEmbedMessage(eventType, proposal);
-
-    await entity.sendEmbedMessage(embedMessage, configuration);
-
-    await log.info(`Discord message sent for event ${eventType}`);
-  } catch (ex) {
-    await log.error('_handleEvent Error', {
-      error: ex,
-      custom: { proposal, error: ex },
-    });
-  }
 };
