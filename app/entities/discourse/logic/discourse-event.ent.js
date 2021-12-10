@@ -8,7 +8,7 @@ const config = require('config');
 
 const { events, eventTypes } = require('../../events');
 const globals = require('../../../utils/globals');
-const { getConfigurations } = require('../../govbot-ctrl');
+const govbotCtrlEnt = require('../../govbot-ctrl');
 
 const log = require('../../../services/log.service').get();
 
@@ -49,7 +49,8 @@ exports.handleWebhook = async (payload, req) => {
   }
 
   await log.info(
-    `Discourse Webhook. Instance: ${payload.instance} id: "${payload.id}"`,
+    `Discourse Webhook Called. Instance: ${payload.instance} - ` +
+      `Space: ${payload} - Topic id: "${payload.topic.id}"`,
   );
 
   events.emit(DISCOURSE_NEW_TOPIC, payload);
@@ -113,7 +114,7 @@ exports._generateLink = (payload) => {
  * @private
  */
 exports._findConfiguration = async (payload) => {
-  const allConfigurations = await getConfigurations();
+  const allConfigurations = await govbotCtrlEnt.getConfigurations();
 
   const { instance } = payload;
   let configFound = false;
