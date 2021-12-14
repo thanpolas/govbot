@@ -13,6 +13,7 @@
         "access_token_secret": "TWITTER_ACCESS_TOKEN_SECRET"
     },
     "app": {
+        "space": "SPACE_NAME",
         "snapshot_webhook_token": "SNAPSHOT_WEBHOOK_TOKEN",
         "discourse_webhook_token": "DISCOURSE_WEBHOOK_TOKEN",
         "discourse_instance_name": "DISCOURSE_INSTANCE_NAME",
