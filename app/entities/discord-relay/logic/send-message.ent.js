@@ -17,6 +17,9 @@ exports.sendEmbedMessage = async (embedMessage, configuration) => {
   if (!discordService.isConnected(configuration)) {
     return;
   }
+  if (!configuration.has_discord) {
+    return;
+  }
 
   const { space, discord_gov_channel_id } = configuration;
   const discordChannel = await getGuildChannel(space, discord_gov_channel_id);

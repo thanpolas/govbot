@@ -26,6 +26,9 @@ const entity = (module.exports = {});
  * @return {Promise<Object>} A Promise with the created tweet.
  */
 entity.sendTweet = async (configuration, status) => {
+  if (!configuration.has_twitter) {
+    return;
+  }
   const client = getClient(configuration.space);
   return client.post('statuses/update', { status });
 };
