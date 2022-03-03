@@ -30,6 +30,8 @@ sql.getSelect = () => {
 
       `${TABLE}.alert_twitter_dispatched`,
       `${TABLE}.alert_discord_dispatched`,
+      `${TABLE}.alert_ethgov_twitter_dispatched`,
+
       `${TABLE}.alert_done`,
 
       `${TABLE}.created_at`,
@@ -105,5 +107,24 @@ sql.getAlerts = async (tx) => {
   }
 
   const result = await statement;
+  return result;
+};
+
+/**
+ * Delete multiple records.
+ *
+ * @param {Array<string>} ids Ids to delete.
+ * @param {Object=} tx Transaction.
+ * @return {Promise<number>} A Promise with the number of deleted records.
+ */
+sql.deleteMany = async (ids, tx) => {
+  const statement = await db().table(TABLE).whereIn('id', ids);
+
+  if (tx) {
+    statement.transacting(tx);
+  }
+
+  const result = await statement.del();
+
   return result;
 };
