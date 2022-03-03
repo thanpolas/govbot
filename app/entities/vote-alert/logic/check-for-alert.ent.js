@@ -91,7 +91,7 @@ entity._deleteNotMonitoredAlerts = async (
   const notFoundSpaces = allPendingAlerts.filter((alertItem) => {
     if (configurationsIndexed[alertItem.space]) {
       // filter out any organizations that no longer require 1h alerts.
-      if (configurationsIndexed[alertItem.space]?.wants_vote_end_alerts) {
+      if (!configurationsIndexed[alertItem.space]?.wants_vote_end_alerts) {
         return true;
       }
       return false;
@@ -108,7 +108,7 @@ entity._deleteNotMonitoredAlerts = async (
     return notFoundSpaces;
   }
 
-  const deleteIds = allPendingAlerts.id;
+  const deleteIds = allPendingAlerts.map((alert) => alert.id);
 
   await deleteMany(deleteIds);
 
