@@ -3,7 +3,8 @@
  */
 
 const { events, eventTypes } = require('../../events');
-const tweet = require('./send-tweet.ent');
+const sendTweetEnt = require('./send-tweet.ent');
+const { update: updateAlert } = require('../../vote-alert');
 
 const log = require('../../../services/log.service').get();
 
@@ -12,6 +13,7 @@ const {
   SNAPSHOT_PROPOSAL_START,
   SNAPSHOT_PROPOSAL_END,
   SNAPSHOT_PROPOSAL_DELETED,
+  PROPOSAL_ENDS_IN_ONE_HOUR,
 } = eventTypes;
 
 const entity = (module.exports = {});
@@ -46,6 +48,10 @@ entity.init = async (configuration) => {
     SNAPSHOT_PROPOSAL_DELETED,
     entity._handleEvent.bind(null, SNAPSHOT_PROPOSAL_DELETED, configuration),
   );
+  events.on(
+    PROPOSAL_ENDS_IN_ONE_HOUR,
+    exports._handleAlertEvent.bind(null, configuration),
+  );
 };
 
 /**
@@ -72,7 +78,7 @@ entity._handleEvent = async (eventType, configuration, proposal) => {
     let message = '';
     switch (eventType) {
       case SNAPSHOT_PROPOSAL_START:
-        message = await tweet.prepareMessage(
+        message = await sendTweetEnt.prepareMessage(
           '📢 Voting STARTED for proposal',
           configuration,
           proposal.title,
@@ -80,7 +86,7 @@ entity._handleEvent = async (eventType, configuration, proposal) => {
         );
         break;
       case SNAPSHOT_PROPOSAL_END:
-        message = await tweet.prepareMessage(
+        message = await sendTweetEnt.prepareMessage(
           '⛔ Voting ENDED for proposal',
           configuration,
           proposal.title,
@@ -96,15 +102,55 @@ entity._handleEvent = async (eventType, configuration, proposal) => {
       return;
     }
 
-    const res = await tweet.sendTweet(configuration, message);
+    const res = await sendTweetEnt.sendTweet(configuration, message);
 
     await log.info(
       `Tweet sent for event ${eventType}, space: ${configuration.space}, twitter id ${res.id}`,
     );
   } catch (ex) {
-    await log.error(`_handleEvent Error for space: ${configuration.space}`, {
+    await log.error(
+      `_handleEvent() Twitter Error for space: ${configuration.space}`,
+      {
+        error: ex,
+        custom: { proposal, error: ex },
+      },
+    );
+  }
+};
+
+/**
+ * Handle a vote end alert, dispatch warning.
+ *
+ * @param {Object} configurationInst This is the configuration  this particular
+ *    runtime is responsible for.
+ * @param {Object} alertRecord The alert record to handle.
+ * @return {Promise<void>}
+ * @private
+ */
+exports._handleAlertEvent = async (configurationInst, alertRecord) => {
+  try {
+    const { configuration } = alertRecord;
+    if (configuration.space !== configurationInst.space) {
+      return;
+    }
+    const tweetMessage = await sendTweetEnt.prepareMessage(
+      '⏰ Less than an hour left to vote on',
+      configuration,
+      alertRecord.title,
+      alertRecord.link,
+    );
+
+    await sendTweetEnt.sendTweet(configuration, tweetMessage);
+
+    const updateData = {
+      alert_twitter_dispatched: true,
+    };
+
+    await updateAlert(alertRecord.id, updateData);
+  } catch (ex) {
+    await log.error('_handleAlertEvent() twitter Error', {
       error: ex,
-      custom: { proposal, error: ex },
+      custom: { alertRecord },
     });
   }
 };

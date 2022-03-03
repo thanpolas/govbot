@@ -10,6 +10,7 @@ const { getLink } = require('../../discord-helpers');
 const { events, eventTypes } = require('../../events');
 const discordService = require('../../../services/discord.service');
 const sendMessageEnt = require('./send-message.ent');
+const { update: updateAlert } = require('../../vote-alert');
 
 const log = require('../../../services/log.service').get();
 
@@ -45,6 +46,11 @@ exports.init = async (configuration) => {
     SNAPSHOT_PROPOSAL_END,
     exports._handleEvent.bind(null, configuration, SNAPSHOT_PROPOSAL_END),
   );
+
+  events.on(
+    PROPOSAL_ENDS_IN_ONE_HOUR,
+    exports._handleAlertEvent.bind(null, configuration),
+  );
 };
 
 /**
@@ -74,9 +80,44 @@ exports._handleEvent = async (configuration, eventType, proposal) => {
 
     await log.info(`Discord message sent for event ${eventType}`);
   } catch (ex) {
-    await log.error('_handleEvent Error', {
+    await log.error('_handleEvent discord Error', {
       error: ex,
       custom: { proposal, error: ex },
+    });
+  }
+};
+
+/**
+ * Handle a vote end alert, dispatch warning.
+ *
+ * @param {Object} configurationInst This is the configuration  this particular
+ *    runtime is responsible for.
+ * @param {Object} alertRecord The alert record to handle.
+ * @return {Promise<void>}
+ * @private
+ */
+exports._handleAlertEvent = async (configurationInst, alertRecord) => {
+  try {
+    const { configuration } = alertRecord;
+    if (configuration.space !== configurationInst.space) {
+      return;
+    }
+    const embedMessage = await exports.createEmbedMessage(
+      PROPOSAL_ENDS_IN_ONE_HOUR,
+      alertRecord,
+    );
+
+    await sendMessageEnt.sendEmbedMessage(embedMessage, configuration);
+
+    const updateData = {
+      alert_discord_dispatched: true,
+    };
+
+    await updateAlert(alertRecord.id, updateData);
+  } catch (ex) {
+    await log.error('_handleAlertEvent() discord Error', {
+      error: ex,
+      custom: { alertRecord },
     });
   }
 };
