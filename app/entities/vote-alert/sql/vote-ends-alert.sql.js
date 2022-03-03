@@ -118,7 +118,7 @@ sql.getAlerts = async (tx) => {
  * @return {Promise<number>} A Promise with the number of deleted records.
  */
 sql.deleteMany = async (ids, tx) => {
-  const statement = await db().table(TABLE).whereIn('id', ids);
+  const statement = db().table(TABLE).whereIn('id', ids);
 
   if (tx) {
     statement.transacting(tx);
