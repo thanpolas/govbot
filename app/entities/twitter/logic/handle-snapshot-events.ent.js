@@ -4,7 +4,9 @@
 
 const { events, eventTypes } = require('../../events');
 const sendTweetEnt = require('./send-tweet.ent');
-const { update: updateAlert } = require('../../vote-alert');
+const {
+  update: updateAlert,
+} = require('../../vote-alert/sql/vote-ends-alert.sql');
 
 const log = require('../../../services/log.service').get();
 
@@ -29,7 +31,7 @@ entity.init = async (configuration) => {
     return;
   }
   await log.info(
-    `Initializing snapshot event handler for ${configuration.space}...`,
+    `Initializing twitter snapshot event handler for ${configuration.space}...`,
   );
 
   events.on(
@@ -150,7 +152,6 @@ exports._handleAlertEvent = async (configurationInst, alertRecord) => {
   } catch (ex) {
     await log.error('_handleAlertEvent() twitter Error', {
       error: ex,
-      custom: { alertRecord },
     });
   }
 };

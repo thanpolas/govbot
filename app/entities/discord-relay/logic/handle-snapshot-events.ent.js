@@ -10,7 +10,9 @@ const { getLink } = require('../../discord-helpers');
 const { events, eventTypes } = require('../../events');
 const discordService = require('../../../services/discord.service');
 const sendMessageEnt = require('./send-message.ent');
-const { update: updateAlert } = require('../../vote-alert');
+const {
+  update: updateAlert,
+} = require('../../vote-alert/sql/vote-ends-alert.sql');
 
 const log = require('../../../services/log.service').get();
 
@@ -31,7 +33,7 @@ exports.init = async (configuration) => {
     return;
   }
   await log.info(
-    `Initializing snapshot event handler for discord for space: ${configuration.space}...`,
+    `Initializing discord snapshot event handler for space: ${configuration.space}...`,
   );
 
   if (!discordService.isConnected(configuration)) {
@@ -117,7 +119,6 @@ exports._handleAlertEvent = async (configurationInst, alertRecord) => {
   } catch (ex) {
     await log.error('_handleAlertEvent() discord Error', {
       error: ex,
-      custom: { alertRecord },
     });
   }
 };
