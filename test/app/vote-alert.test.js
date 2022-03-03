@@ -7,8 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 const testLib = require('../lib/test.lib');
 
 const { checkForAlerts } = require('../../app/entities/vote-alert');
-
 const { webhookStartFix } = require('../fixtures/snapshot.fix');
+const { delayMs } = require('../../app/utils/helpers');
 const {
   deleteAll,
   getByProposalId,
@@ -65,6 +65,8 @@ describe('Voting Alert', () => {
 
       await checkForAlerts();
 
+      // Give some time the event based listeners to trigger
+      await delayMs(200);
       const expectedTweet =
         '⏰ Less than an hour left to vote on:\n\n"Temp ' +
         'Check: Larger Grant Construct // CEA + No Negative Net UNI"\n\n' +
