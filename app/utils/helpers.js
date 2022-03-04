@@ -29,8 +29,18 @@ helpers.asyncMapCap = (items, fn, concurrency = 5) =>
  * @return {Promise<void>}
  */
 helpers.delay = (seconds) => {
+  return helpers.delayMs(seconds * 1000);
+};
+
+/**
+ * An async delay in milliseconds.
+ *
+ * @param {number} ms How many seconds to wait.
+ * @return {Promise<void>}
+ */
+helpers.delayMs = (ms) => {
   return new Promise((resolve) => {
-    setTimeout(resolve, seconds * 1000);
+    setTimeout(resolve, ms);
   });
 };
 

@@ -2,12 +2,9 @@
  * @fileoverview Will check if alert[s] are due and dispatch them.
  */
 
-const BPromise = require('bluebird');
-
-const { getAlerts, update } = require('../sql/vote-ends-alert.sql');
-const twitterEnt = require('../../twitter');
-const discordEnt = require('../../discord-relay');
-const { eventTypes } = require('../../events');
+const { getAlerts, update, deleteMany } = require('../sql/vote-ends-alert.sql');
+const { Protocols } = require('../../twitter/constants/protocols.const');
+const { events, eventTypes } = require('../../events');
 const { getConfigurations } = require('../../govbot-ctrl');
 const { indexArrayToObject } = require('../../../utils/helpers');
 
@@ -15,14 +12,12 @@ const log = require('../../../services/log.service').get();
 
 const { PROPOSAL_ENDS_IN_ONE_HOUR } = eventTypes;
 
-const entity = (module.exports = {});
-
 /**
  * Will check if alert[s] are due and dispatch them.
  *
  * @return {Promise<void>} A Promise.
  */
-entity.checkForAlerts = async () => {
+exports.checkForAlerts = async () => {
   try {
     const allConfigurations = await getConfigurations();
     const allPendingAlerts = await getAlerts();
@@ -35,132 +30,81 @@ entity.checkForAlerts = async () => {
       'space',
     );
 
-    // This is for debugging purposes, catching any corruption of the db...
-    const notFoundSpaces = allPendingAlerts.map((alertItem) => {
-      if (!configurationsIndexed[alertItem.space]) {
-        return alertItem;
-      }
-      return null;
-    });
+    // Delete records of spaces not monitored.
+    const deleteIds = await exports._deleteNotMonitoredAlerts(
+      allPendingAlerts,
+      configurationsIndexed,
+    );
 
-    const issues = notFoundSpaces.filter((n) => !!n);
-
-    if (issues.length) {
-      issues.forEach(async (issue) => {
-        await log.warn(`Found missing space: ${issue.space}`, {
-          custom: {
-            allConfigurations,
-            alertItem: issue,
-          },
-        });
-      });
-    }
-
-    // filter out any organizations that no longer require 1h alerts.
     const pendingAlerts = allPendingAlerts.filter((alertItem) => {
-      return configurationsIndexed[alertItem.space]?.wants_vote_end_alerts;
-    });
-    if (!pendingAlerts.length) {
-      return;
-    }
-
-    // Augmend alerts with their corresponding configuration.
-    pendingAlerts.forEach((alertItem) => {
+      if (deleteIds.includes(alertItem.id)) {
+        return false;
+      }
+      // Augmend alerts with their corresponding configuration.
       alertItem.configuration = configurationsIndexed[alertItem.space];
-    });
 
-    await BPromise.mapSeries(pendingAlerts, entity._dispatchAlert);
+      return true;
+    });
 
     await log.info(
-      `checkForAlerts() dispatched ${pendingAlerts.length} vote expiration alert[s]`,
+      `checkForAlerts() dispatching ${pendingAlerts.length} vote expiration alert[s]`,
     );
+
+    // dispatch events
+    pendingAlerts.forEach((alertItem) => {
+      events.emit(PROPOSAL_ENDS_IN_ONE_HOUR, alertItem);
+    });
+
+    // Update alert record that it's done
+    const updateData = {
+      alert_done: true,
+    };
+    const promises = pendingAlerts.map((alertRecord) =>
+      update(alertRecord.id, updateData),
+    );
+    await Promise.all(promises);
   } catch (ex) {
-    await log.error('checkForalert Error', {
+    await log.error('checkForAlerts() Error', {
       error: ex,
     });
   }
 };
 
 /**
- * Will dispatch message and save to db.
+ * Deletes not monitored alerts from the DB.
  *
- * @param {Object} alertRecord The alert record to dispatch.
- * @return {Promise<void>} A Promise.
+ * @param {Array<Object>} allPendingAlerts All pending alert records.
+ * @param {Object} configurationsIndexed Configurations indexed by space id.
+ * @return {Promise<Array<string>>} The spaces' IDs that have been deleted.
  * @private
  */
-entity._dispatchAlert = async (alertRecord) => {
-  const [tweeter, discord] = await Promise.allSettled([
-    entity._dispatchTweet(alertRecord),
-    entity._dispatchDiscord(alertRecord),
-  ]);
+exports._deleteNotMonitoredAlerts = async (
+  allPendingAlerts,
+  configurationsIndexed,
+) => {
+  const notFoundSpaces = allPendingAlerts.filter((alertItem) => {
+    if (configurationsIndexed[alertItem.space]) {
+      // filter out any organizations that no longer require 1h alerts.
+      if (!configurationsIndexed[alertItem.space]?.wants_vote_end_alerts) {
+        return true;
+      }
+      return false;
+    }
 
-  if (tweeter.status === 'fulfilled' && discord.status === 'fulfilled') {
-    const updateData = {
-      alert_done: true,
-    };
+    if (Protocols[alertItem.space]) {
+      return false;
+    }
 
-    await update(alertRecord.id, updateData);
-    return;
+    return true;
+  });
+
+  if (!notFoundSpaces.length) {
+    return notFoundSpaces;
   }
 
-  // an error occured, figure out where and why
-  if (tweeter.status === 'rejected') {
-    await log.error('Tweeter vote ends alert failed', {
-      error: tweeter.reason,
-    });
-  }
+  const deleteIds = allPendingAlerts.map((alert) => alert.id);
 
-  if (discord.status === 'rejected') {
-    await log.error('Discord vote ends alert failed', {
-      error: discord.reason,
-    });
-  }
-};
+  await deleteMany(deleteIds);
 
-/**
- * Dispatch Tweet.
- *
- * @param {Object} alertRecord The alert record to dispatch.
- * @return {Promise<void>} A Promise.
- * @private
- */
-entity._dispatchTweet = async (alertRecord) => {
-  const { configuration } = alertRecord;
-
-  const tweetMessage = await twitterEnt.prepareMessage(
-    '⏰ Less than an hour left to vote on',
-    configuration,
-    alertRecord.title,
-    alertRecord.link,
-  );
-
-  await twitterEnt.sendTweet(configuration, tweetMessage);
-
-  const updateData = {
-    alert_twitter_dispatched: true,
-  };
-
-  await update(alertRecord.id, updateData);
-};
-
-/**
- * Dispatch discord message.
- *
- * @param {Object} alertRecord The alert record to dispatch.
- * @return {Promise<void>} A Promise.
- * @private
- */
-entity._dispatchDiscord = async (alertRecord) => {
-  const { configuration } = alertRecord;
-  const embedMessage = await discordEnt.createEmbedMessage(
-    PROPOSAL_ENDS_IN_ONE_HOUR,
-    alertRecord,
-  );
-  await discordEnt.sendEmbedMessage(embedMessage, configuration);
-
-  const updateData = {
-    alert_discord_dispatched: true,
-  };
-
-  await update(alertRecord.id, updateData);
+  return deleteIds;
 };

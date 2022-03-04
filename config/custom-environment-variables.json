@@ -18,6 +18,13 @@
         "discourse_webhook_token": "DISCOURSE_WEBHOOK_TOKEN",
         "discourse_instance_name": "DISCOURSE_INSTANCE_NAME",
         "wants_discourse_alerts": "WANTS_DISCOURSE",
-        "has_discord": "HAS_DISCORD"
+        "has_discord": "HAS_DISCORD",
+        "has_ethgovalerts": "HAS_ETHGOVALERTS"
+    },
+    "twitter_ethgovalerts": {
+        "consumer_key": "TWITTER_ETHGOV_CONSUMER_KEY",
+        "consumer_secret": "TWITTER_ETHGOV_CONSUMER_SECRET",
+        "access_token": "TWITTER_ETHGOV_ACCESS_TOKEN",
+        "access_token_secret": "TWITTER_ETHGOV_ACCESS_TOKEN_SECRET"
     }
 }
