@@ -21,7 +21,7 @@ exports._twClient = null;
  * Initialize the ethgovalerts functionality if enabled.
  */
 exports.init = async () => {
-  if (!config.app.has_ethgovalerts) {
+  if (config.app.has_ethgovalerts !== '1') {
     return;
   }
 
