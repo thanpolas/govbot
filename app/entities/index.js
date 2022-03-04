@@ -3,6 +3,7 @@
  */
 
 const { init: initGovbot } = require('./govbot-ctrl');
+const { init: initEthGovAlerts } = require('./ethgovalerts');
 
 const bootstrap = (module.exports = {});
 
@@ -15,4 +16,5 @@ const bootstrap = (module.exports = {});
  */
 bootstrap.init = async (bootOpts) => {
   await initGovbot(bootOpts);
+  await initEthGovAlerts();
 };
