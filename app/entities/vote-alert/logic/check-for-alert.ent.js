@@ -3,7 +3,7 @@
  */
 
 const { getAlerts, update, deleteMany } = require('../sql/vote-ends-alert.sql');
-const { getEthGovAlertSpaces } = require('../../ethgovalerts');
+const { Protocols } = require('../../twitter/constants/protocols.const');
 const { events, eventTypes } = require('../../events');
 const { getConfigurations } = require('../../govbot-ctrl');
 const { indexArrayToObject } = require('../../../utils/helpers');
@@ -12,17 +12,14 @@ const log = require('../../../services/log.service').get();
 
 const { PROPOSAL_ENDS_IN_ONE_HOUR } = eventTypes;
 
-const entity = (module.exports = {});
-
 /**
  * Will check if alert[s] are due and dispatch them.
  *
  * @return {Promise<void>} A Promise.
  */
-entity.checkForAlerts = async () => {
+exports.checkForAlerts = async () => {
   try {
     const allConfigurations = await getConfigurations();
-    const ethGovAlertSpaces = getEthGovAlertSpaces();
     const allPendingAlerts = await getAlerts();
     if (!allPendingAlerts.length) {
       return;
@@ -34,10 +31,9 @@ entity.checkForAlerts = async () => {
     );
 
     // Delete records of spaces not monitored.
-    const deleteIds = await entity._deleteNotMonitoredAlerts(
+    const deleteIds = await exports._deleteNotMonitoredAlerts(
       allPendingAlerts,
       configurationsIndexed,
-      ethGovAlertSpaces,
     );
 
     const pendingAlerts = allPendingAlerts.filter((alertItem) => {
@@ -79,14 +75,12 @@ entity.checkForAlerts = async () => {
  *
  * @param {Array<Object>} allPendingAlerts All pending alert records.
  * @param {Object} configurationsIndexed Configurations indexed by space id.
- * @param {Array<string>} ethGovAlertSpaces Array of spaces used in eth gov alerts.
  * @return {Promise<Array<string>>} The spaces' IDs that have been deleted.
  * @private
  */
-entity._deleteNotMonitoredAlerts = async (
+exports._deleteNotMonitoredAlerts = async (
   allPendingAlerts,
   configurationsIndexed,
-  ethGovAlertSpaces,
 ) => {
   const notFoundSpaces = allPendingAlerts.filter((alertItem) => {
     if (configurationsIndexed[alertItem.space]) {
@@ -97,7 +91,7 @@ entity._deleteNotMonitoredAlerts = async (
       return false;
     }
 
-    if (ethGovAlertSpaces.includes(alertItem.space)) {
+    if (Protocols[alertItem.space]) {
       return false;
     }
 
