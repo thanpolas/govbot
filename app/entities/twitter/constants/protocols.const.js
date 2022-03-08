@@ -25,6 +25,9 @@ exports.Protocols = {
   'ilvgov.eth': 'illuviumio',
   'ybaby.eth': 'iearnfinance',
   'shapeshiftdao.eth': 'ShapeShift_io',
+  'fei.eth': 'feiprotocol',
+  'comp-vote.eth': 'compoundfinance',
+  'paraswap-dao.eth': 'paraswap',
 };
 
 exports.ProtocolsAr = Object.keys(exports.Protocols).map((k) => k);
