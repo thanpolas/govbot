@@ -28,7 +28,6 @@ exports.init = async () => {
   await log.notice('Booting ethgovalerts entity...');
 
   exports.initTwitter();
-  await exports._twClient.post('statuses/update', { status: 'message test' });
 
   events.on(SNAPSHOT_PROPOSAL_START, exports._handleProposalStart);
   events.on(PROPOSAL_ENDS_IN_ONE_HOUR, exports._handleProposalAlert);
@@ -46,7 +45,6 @@ exports.initTwitter = () => {
     access_token_secret: config.twitter_ethgovalerts.access_token_secret,
   };
 
-  console.log('TWITTER CNFIG ETHGOV:', twitterConfig);
   exports._twClient = new TwitterApi(twitterConfig);
 };
 
