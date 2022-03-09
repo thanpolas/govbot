@@ -42,9 +42,10 @@ Follow this guide to get twitter tokens:
 
 1. From the account you want the tweets to happen [apply for a Developer Account][twitter-apply]. This will take about a day and they might ask for followup questions.
 1. Once you have your developer account approved, [go to the developer portal and create an application][twitter-portal], do not mark down any keys or tokens at this step, just create the app.
-1. Once the app is created and you see it on your dashboard, you should see two icons, a "cog" (App settings) and a "key" (Keys and tokens).
-1. Click on the Cog (App Settings).
-1. Edit the "App Permissions" and make sure the permissions are "Read and Write".
+1. Once the app is created and you see it on your dashboard.
+1. On the Settings tab, scroll down to “User authentication settings”. Click Edit.
+1. Toggle on OAuth 1.0a, and in the OAuth 1.0a Settings section.
+1. Select your app permissions and make sure they are "Read and write".
 1. Go back to the Dashboard and click on the "key icon" (Keys and tokens).
 1. Regenerate your "consumer keys" and note both keys and values down in a safe and temporary document.
 1. Regenerate the "Access Token and Secret" and note both keys and values down in a safe and temporary document.
