@@ -45,6 +45,8 @@ exports.initTwitter = () => {
     access_token_key: config.twitter_ethgovalerts.access_token,
     access_token_secret: config.twitter_ethgovalerts.access_token_secret,
   };
+
+  console.log('TWITTER CNFIG ETHGOV:', twitterConfig);
   exports._twClient = new TwitterApi(twitterConfig);
 };
 
