@@ -95,6 +95,6 @@ exports._fetchProposal = async (proposalUri) => {
  */
 exports._generateLink = (proposal) => {
   // https://snapshot.org/#/uniswap/proposal/QmQbcxLpGENeDauCAsh3BXy9H9fiiK46JEfnLqG3s8iMbN
-  const spaceName = proposal.space.name.toLowerCase();
+  const spaceName = proposal.space.id.toLowerCase();
   return `https://snapshot.org/#/${spaceName}/proposal/${proposal.id}`;
 };
